@@ -11,14 +11,19 @@ export function Header() {
   const router = useRouter();
   const pathname = usePathname();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [isClient, setIsClient] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setIsClient(true);
-    const studentLogin = localStorage.getItem('isStudentLoggedIn') === 'true';
-    const facultyLogin = localStorage.getItem('isFacultyLoggedIn') === 'true';
-    setIsLoggedIn(studentLogin || facultyLogin);
-  }, [pathname]);
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (mounted) {
+      const studentLogin = localStorage.getItem('isStudentLoggedIn') === 'true';
+      const facultyLogin = localStorage.getItem('isFacultyLoggedIn') === 'true';
+      setIsLoggedIn(studentLogin || facultyLogin);
+    }
+  }, [mounted, pathname]);
 
   const handleLogout = () => {
     localStorage.removeItem('isStudentLoggedIn');
@@ -43,7 +48,7 @@ export function Header() {
                 <Home className="h-5 w-5" />
               </Button>
             </Link>
-            {isClient && isLoggedIn && (
+            {mounted && isLoggedIn && (
               <Button variant="ghost" size="icon" aria-label="Logout" onClick={handleLogout}>
                 <LogOut className="h-5 w-5" />
               </Button>
