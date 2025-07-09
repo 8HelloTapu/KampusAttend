@@ -47,6 +47,7 @@ export default function ReportAbsencePage() {
         title: 'Submission Failed',
         description: result.error,
       });
+      setIsSubmitting(false);
     } else {
       toast({
         variant: 'success',
@@ -56,7 +57,6 @@ export default function ReportAbsencePage() {
       form.reset();
       router.push('/student');
     }
-    setIsSubmitting(false);
   };
 
   return (
