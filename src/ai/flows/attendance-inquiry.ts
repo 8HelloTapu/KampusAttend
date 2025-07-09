@@ -1,3 +1,4 @@
+
 'use server';
 
 /**
@@ -13,7 +14,7 @@ import {z} from 'genkit';
 
 const AttendanceInquiryInputSchema = z.object({
   query: z.string().describe('The attendance-related question from the faculty member.'),
-  attendanceData: z.string().describe('The attendance data, e.g., a JSON string of student info including roll number, status, locationWarning, and attendanceTime.'),
+  attendanceData: z.string().describe('The attendance data, e.g., a JSON string of student info including roll number, status, locationWarning, attendanceTime, and absenceReason.'),
 });
 export type AttendanceInquiryInput = z.infer<typeof AttendanceInquiryInputSchema>;
 
@@ -38,6 +39,7 @@ const prompt = ai.definePrompt({
   - 'status': "Present" or "Absent".
   - 'attendanceTime': The time the student marked their attendance, if present.
   - 'locationWarning: true': This field means their GPS location was far from the campus. Mention this if it is relevant.
+  - 'absenceReason': If a student is 'Absent', this field may contain the reason they provided. Use this to answer questions about why a student is absent.
 
   Attendance Data: {{{attendanceData}}}
   Question: {{{query}}}

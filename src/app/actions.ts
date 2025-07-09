@@ -1,3 +1,4 @@
+
 'use server';
 
 import { attendanceInquiry } from '@/ai/flows/attendance-inquiry';
@@ -5,7 +6,7 @@ import { locationAnomalyReport } from '@/ai/flows/location-anomaly-report';
 import { verifyStudent } from '@/ai/flows/verify-student';
 import { z } from 'zod';
 import { generateCancellationNotification } from '@/ai/flows/generate-cancellation-notification';
-import { addNotification, markAbsent } from '@/lib/attendanceStore';
+import { addAbsenceReason, addNotification, markAbsent } from '@/lib/attendanceStore';
 
 const inquirySchema = z.object({
   query: z.string(),
@@ -117,5 +118,32 @@ export async function handleCancelAttendance(formData: FormData) {
   } catch(e) {
     console.error(e);
     return { error: "An unexpected error occurred while cancelling attendance." };
+  }
+}
+
+const absenceReportSchema = z.object({
+  rollNumber: z.string().min(1, 'Roll number is required.'),
+  reason: z.string().min(10, 'Reason must be at least 10 characters long.'),
+});
+
+export async function handleAbsenceReport(formData: FormData) {
+  const parsed = absenceReportSchema.safeParse({
+    rollNumber: formData.get('rollNumber'),
+    reason: formData.get('reason'),
+  });
+
+  if (!parsed.success) {
+    return { error: 'Invalid input. Please check your roll number and reason.' };
+  }
+
+  try {
+    const result = addAbsenceReason(parsed.data.rollNumber, parsed.data.reason);
+    if (!result.success) {
+      return { error: result.error };
+    }
+    return { success: true, studentName: result.studentName };
+  } catch (e) {
+    console.error(e);
+    return { error: 'An unexpected error occurred while submitting the reason.' };
   }
 }

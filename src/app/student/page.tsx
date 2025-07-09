@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -7,7 +8,7 @@ import { Header } from '@/components/Header';
 import { AttendanceForm } from '@/components/student/AttendanceForm';
 import { Skeleton } from '@/components/ui/skeleton';
 import { buttonVariants } from '@/components/ui/button';
-import { Bell } from 'lucide-react';
+import { Bell, MessageSquareWarning } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 export default function StudentDashboard() {
@@ -46,10 +47,16 @@ export default function StudentDashboard() {
       <main className="flex flex-1 flex-col items-center justify-center bg-background p-4 md:p-8">
         <div className="w-full max-w-md space-y-4">
             <AttendanceForm />
-            <Link href="/student/notifications" className={cn(buttonVariants({ variant: "outline" }), "w-full")}>
-                <Bell className="mr-2 h-4 w-4"/>
-                Check Notifications
-            </Link>
+            <div className="flex flex-col sm:flex-row gap-2">
+                <Link href="/student/notifications" className={cn(buttonVariants({ variant: "outline" }), "w-full")}>
+                    <Bell className="mr-2 h-4 w-4"/>
+                    Check Notifications
+                </Link>
+                <Link href="/student/report-absence" className={cn(buttonVariants({ variant: "outline" }), "w-full")}>
+                    <MessageSquareWarning className="mr-2 h-4 w-4"/>
+                    Report Absence
+                </Link>
+            </div>
         </div>
       </main>
     </div>

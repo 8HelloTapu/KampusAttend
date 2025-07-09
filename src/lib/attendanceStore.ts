@@ -69,6 +69,7 @@ export function markPresent(rollNumber: string, location?: {latitude: number, lo
   if (studentIndex > -1) {
     students[studentIndex].status = 'Present';
     students[studentIndex].attendanceTime = new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+    students[studentIndex].absenceReason = undefined; // Clear reason on marking present
 
     if (location) {
         students[studentIndex].location = `${location.latitude.toFixed(4)}, ${location.longitude.toFixed(4)}`;
@@ -98,10 +99,30 @@ export function markAbsent(rollNumber: string) {
     students[studentIndex].attendanceTime = undefined;
     students[studentIndex].location = undefined;
     students[studentIndex].locationWarning = false;
+    students[studentIndex].absenceReason = undefined; // Clear reason when manually marked absent
 
     localStorage.setItem(ATTENDANCE_KEY, JSON.stringify(students));
   }
 }
+
+export function addAbsenceReason(rollNumber: string, reason: string): { success: boolean; studentName?: string; error?: string } {
+    if (typeof window === 'undefined') return { success: false, error: 'Function can only be called on the client.'};
+
+    const students = getStudents();
+    const studentIndex = students.findIndex(s => s.rollNumber.toLowerCase() === rollNumber.toLowerCase());
+
+    if (studentIndex > -1) {
+        const student = students[studentIndex];
+        if (student.status === 'Present') {
+            return { success: false, error: 'Cannot report absence for a student marked Present.' };
+        }
+        students[studentIndex].absenceReason = reason;
+        localStorage.setItem(ATTENDANCE_KEY, JSON.stringify(students));
+        return { success: true, studentName: student.name };
+    }
+    return { success: false, error: 'Student with the provided roll number not found.' };
+}
+
 
 // === Notification Management ===
 const NOTIFICATION_PREFIX = 'notifications_';

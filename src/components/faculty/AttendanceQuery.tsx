@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useTransition } from 'react';
@@ -29,6 +30,7 @@ export function AttendanceQuery({ branch }: { branch: string }) {
         branch: s.branch,
         locationWarning: s.locationWarning,
         attendanceTime: s.attendanceTime,
+        absenceReason: s.absenceReason,
       }))
     );
 

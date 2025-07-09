@@ -10,6 +10,7 @@ export interface Student {
   locationWarning?: boolean;
   referenceImageUrl?: string;
   attendanceTime?: string;
+  absenceReason?: string;
 }
 
 export const COLLEGE_LOCATION = {
