@@ -164,7 +164,9 @@ export function AttendanceForm() {
           <CardHeader>
             <CardTitle className="text-2xl font-headline">Mark Your Attendance</CardTitle>
             <CardDescription>
-              Enter your roll number and allow camera & location access. Your location will be checked against the campus.
+              Enter your roll number and allow camera & location access. For this
+              prototype, verification is based on roll number only. Image
+              verification feature will be added soon.
             </CardDescription>
           </CardHeader>
 
