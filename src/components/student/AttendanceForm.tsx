@@ -115,7 +115,7 @@ export function AttendanceForm() {
   
         if (student.status === 'Present') {
           toast({
-            variant: 'default',
+            variant: 'destructive',
             title: 'Already Marked',
             description: `Hi ${student.name}, your attendance is already marked as Present.`,
           });
@@ -135,6 +135,7 @@ export function AttendanceForm() {
           });
         } else {
           toast({
+              variant: 'success',
               title: successTitle,
               description: `Welcome, ${student.name}. Your attendance has been recorded.`,
           });
