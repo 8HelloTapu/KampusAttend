@@ -59,15 +59,17 @@ export async function handleLocationAnomalyReport(formData: FormData) {
 
 const verificationSchema = z.object({
   rollNumber: z.string(),
+  livePhotoDataUri: z.string(),
 });
 
 export async function handleAttendanceVerification(formData: FormData) {
     const parsed = verificationSchema.safeParse({
         rollNumber: formData.get('rollNumber'),
+        livePhotoDataUri: formData.get('livePhotoDataUri'),
     });
 
     if (!parsed.success) {
-        return { error: 'Invalid input. Roll number is required.' };
+        return { error: 'Invalid input. Roll number and photo are required.' };
     }
     
     try {

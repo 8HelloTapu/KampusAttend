@@ -28,6 +28,7 @@ export function AttendanceForm() {
   const [isWindowOpen, setIsWindowOpen] = useState(true);
   const [hasCameraPermission, setHasCameraPermission] = useState<boolean | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const router = useRouter();
 
   const { toast } = useToast();
@@ -74,11 +75,12 @@ export function AttendanceForm() {
     getCameraPermission();
   }, [toast]);
 
-  const handleVerificationAndMarking = (data: AttendanceFormValues, coords: GeolocationCoordinates) => {
+  const handleVerificationAndMarking = (data: AttendanceFormValues, livePhotoDataUri: string, coords: GeolocationCoordinates) => {
     startTransition(async () => {
         setIsLocating(false);
         const formData = new FormData();
         formData.append('rollNumber', data.rollNumber);
+        formData.append('livePhotoDataUri', livePhotoDataUri);
   
         const response = await handleAttendanceVerification(formData);
         
@@ -86,7 +88,7 @@ export function AttendanceForm() {
           toast({
             variant: 'destructive',
             title: 'Verification Failed',
-            description: response.error || response.result?.message || 'Could not verify your roll number.',
+            description: response.error || response.result?.message || 'Could not verify your identity.',
           });
           return;
         }
@@ -115,16 +117,17 @@ export function AttendanceForm() {
   
         const { locationWarning } = markPresent(data.rollNumber, { latitude: coords.latitude, longitude: coords.longitude });
         
+        const successTitle = response.result?.message || 'Verification Successful!';
         if (locationWarning) {
           toast({
               variant: 'destructive',
-              title: 'Location Warning!',
-              description: `Welcome, ${student.name}. Your location seems to be far from campus, but your attendance has been recorded with a warning.`,
+              title: successTitle,
+              description: `Welcome, ${student.name}. Your location seems far from campus, but attendance has been recorded with a warning.`,
               duration: 5000,
           });
         } else {
           toast({
-              title: 'Verification Successful!',
+              title: successTitle,
               description: `Welcome, ${student.name}. Your attendance has been recorded.`,
           });
         }
@@ -163,6 +166,23 @@ export function AttendanceForm() {
         });
         return;
     }
+    
+    if (!videoRef.current || !canvasRef.current) {
+        toast({ variant: 'destructive', title: 'Camera Error', description: 'Camera or system components are not ready.' });
+        return;
+    }
+
+    const canvas = canvasRef.current;
+    const video = videoRef.current;
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    const context = canvas.getContext('2d');
+    if (!context) {
+        toast({ variant: 'destructive', title: 'System Error', description: 'Could not capture image.' });
+        return;
+    }
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+    const livePhotoDataUri = canvas.toDataURL('image/jpeg');
 
     setIsLocating(true);
 
@@ -174,7 +194,7 @@ export function AttendanceForm() {
 
     navigator.geolocation.getCurrentPosition(
       (position) => {
-        handleVerificationAndMarking(data, position.coords);
+        handleVerificationAndMarking(data, livePhotoDataUri, position.coords);
       },
       (error) => {
         setIsLocating(false);
@@ -192,9 +212,7 @@ export function AttendanceForm() {
           <CardHeader>
             <CardTitle className="text-2xl font-headline">Mark Your Attendance</CardTitle>
             <CardDescription>
-              Enter your roll number and allow camera &amp; location access. For this
-              prototype, verification is based on roll number only. Image
-              verification feature will be added soon.
+              Enter your roll number and allow camera &amp; location access. The system will use facial recognition to verify your identity.
             </CardDescription>
           </CardHeader>
 
@@ -213,6 +231,7 @@ export function AttendanceForm() {
               <CardContent className="space-y-6">
                 <div className="flex justify-center items-center p-8 bg-muted rounded-lg border-2 border-dashed relative aspect-video">
                   <video ref={videoRef} className="w-full h-full absolute inset-0 object-cover rounded-md" autoPlay muted playsInline />
+                  <canvas ref={canvasRef} className="hidden" />
                   {hasCameraPermission === false && (
                       <div className="flex flex-col items-center justify-center text-muted-foreground z-10 p-4 bg-background/80 rounded-lg">
                           <VideoOff className="w-12 h-12 mb-2" />
@@ -242,7 +261,7 @@ export function AttendanceForm() {
                     <FormItem>
                       <FormLabel>Roll Number</FormLabel>
                       <FormControl>
-                        <Input placeholder="e.g., 23XV1M0501" {...field} disabled={hasCameraPermission !== true || isSubmitting}/>
+                        <Input placeholder="e.g., 23XV1M0545" {...field} disabled={hasCameraPermission !== true || isSubmitting}/>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
