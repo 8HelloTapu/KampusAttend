@@ -45,17 +45,15 @@ export async function handleAbsenteeAlert() {
 
 const verificationSchema = z.object({
   rollNumber: z.string(),
-  capturedPhotoDataUri: z.string(),
 });
 
 export async function handleAttendanceVerification(formData: FormData) {
     const parsed = verificationSchema.safeParse({
         rollNumber: formData.get('rollNumber'),
-        capturedPhotoDataUri: formData.get('capturedPhotoDataUri'),
     });
 
-    if (!parsed.success || !parsed.data.capturedPhotoDataUri) {
-        return { error: 'Invalid input. Image and roll number are required.' };
+    if (!parsed.success) {
+        return { error: 'Invalid input. Roll number is required.' };
     }
     
     try {
@@ -63,6 +61,6 @@ export async function handleAttendanceVerification(formData: FormData) {
         return { result };
     } catch (e) {
         console.error(e);
-        return { error: 'An unexpected error occurred during AI verification.' };
+        return { error: 'An unexpected error occurred during verification.' };
     }
 }
