@@ -145,7 +145,7 @@ export function AttendanceForm() {
         form.reset();
         
         setTimeout(() => {
-          router.push('/');
+          router.push('/auth');
         }, 2000);
     });
   }
