@@ -11,13 +11,22 @@ export interface Student {
 }
 
 export const COLLEGE_LOCATION = {
-  latitude: 17.4594,
-  longitude: 78.3323,
+  latitude: 17.4947,
+  longitude: 78.3918,
 };
 
 export const ALL_BRANCHES = [
   { value: 'B.Tech CSE', label: 'B.Tech CSE' },
   { value: 'CSE(DS)', label: 'CSE (Data Science)' },
+];
+
+export const ALL_SUBJECTS = [
+  { value: 'Computer Networks', label: 'Computer Networks' },
+  { value: 'Operating Systems', label: 'Operating Systems' },
+  { value: 'Software Engineering', label: 'Software Engineering' },
+  { value: 'Discrete Mathematics', label: 'Discrete Mathematics' },
+  { value: 'Data Structures', label: 'Data Structures' },
+  { value: 'DBMS', label: 'DBMS' },
 ];
 
 const cseStudents: Omit<Student, 'id' | 'avatarUrl' | 'status'>[] = [

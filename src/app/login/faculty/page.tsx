@@ -1,9 +1,7 @@
 'use client';
 
 import { LoginCard } from '@/components/auth/LoginCard';
-import { ALL_BRANCHES } from '@/lib/data';
-
-const subjects = ALL_BRANCHES;
+import { ALL_SUBJECTS } from '@/lib/data';
 
 export default function FacultyLoginPage() {
   return (
@@ -14,7 +12,7 @@ export default function FacultyLoginPage() {
         expectedPassword="password"
         redirectPath="/faculty"
         authKey="isFacultyLoggedIn"
-        subjects={subjects}
+        subjects={ALL_SUBJECTS}
       />
     </div>
   );

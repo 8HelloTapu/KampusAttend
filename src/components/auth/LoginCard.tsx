@@ -51,7 +51,8 @@ export function LoginCard({ userType, expectedUsername, expectedPassword, redire
       if (data.username === expectedUsername && data.password === expectedPassword) {
         localStorage.setItem(authKey, 'true');
         if (userType === 'Faculty' && data.subject) {
-          localStorage.setItem('facultyClass', data.subject);
+          // Store selected subject without breaking the class-based dashboard
+          localStorage.setItem('facultySubject', data.subject);
         } else if (userType === 'Student' && data.subject) {
           localStorage.setItem('studentBranch', data.subject);
         }
@@ -121,11 +122,11 @@ export function LoginCard({ userType, expectedUsername, expectedPassword, redire
                 name="subject"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{userType === 'Faculty' ? 'Subject/Class' : 'Branch'}</FormLabel>
+                    <FormLabel>{userType === 'Faculty' ? 'Subject' : 'Branch'}</FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder={userType === 'Faculty' ? 'Select a class' : 'Select your branch'} />
+                          <SelectValue placeholder={userType === 'Faculty' ? 'Select a subject' : 'Select your branch'} />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
