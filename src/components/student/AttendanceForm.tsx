@@ -129,9 +129,9 @@ export function AttendanceForm() {
         const successTitle = response.result?.message || 'Verification Successful!';
         if (locationWarning) {
           toast({
-              variant: 'destructive',
+              variant: 'success',
               title: successTitle,
-              description: `Welcome, ${student.name}. Attendance recorded at ${markedTime}. Location seems far from campus.`,
+              description: `Welcome, ${student.name}. Your location seems far from campus, but attendance has been successfully recorded at ${markedTime}.`,
               duration: 5000,
           });
         } else {
