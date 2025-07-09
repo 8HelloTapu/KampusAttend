@@ -5,7 +5,6 @@ import { locationAnomalyReport } from '@/ai/flows/location-anomaly-report';
 import { verifyStudent } from '@/ai/flows/verify-student';
 import { z } from 'zod';
 import { generateCancellationNotification } from '@/ai/flows/generate-cancellation-notification';
-import { markAbsent, addNotification } from '@/lib/attendanceStore';
 
 const inquirySchema = z.object({
   query: z.string(),
@@ -99,23 +98,16 @@ export async function handleCancelAttendance(formData: FormData) {
   }
 
   try {
-    // 1. Mark student as absent and flag as cancelled
-    markAbsent(parsed.data.rollNumber, true);
-    
-    // 2. Generate notification with AI
+    // Generate notification with AI
     const notificationResult = await generateCancellationNotification({
         name: parsed.data.name,
         rollNumber: parsed.data.rollNumber,
     });
     
-    // 3. Store notification for the student
-    if (notificationResult.notification) {
-        addNotification(parsed.data.rollNumber, notificationResult.notification);
-    }
-    
-    return { success: true, studentName: parsed.data.name };
+    // Return the generated message to the client, which will handle state updates
+    return { success: true, studentName: parsed.data.name, notification: notificationResult.notification };
   } catch(e) {
     console.error(e);
-    return { error: "An unexpected error occurred while cancelling attendance." };
+    return { error: "An unexpected error occurred while generating the cancellation notification." };
   }
 }

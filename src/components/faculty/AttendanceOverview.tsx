@@ -6,7 +6,7 @@ import type { Student } from '@/lib/data';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { initializeData, getStudents } from '@/lib/attendanceStore';
+import { initializeData, getStudents, markAbsent, addNotification } from '@/lib/attendanceStore';
 import { ShieldAlert, XCircle, Loader2 } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Button } from '@/components/ui/button';
@@ -55,7 +55,11 @@ export function AttendanceOverview({ branch }: { branch: string }) {
           title: 'Error',
           description: result.error,
         });
-      } else if (result.success) {
+      } else if (result.success && result.notification) {
+        // Client-side state updates
+        markAbsent(student.rollNumber, true);
+        addNotification(student.rollNumber, result.notification);
+
         toast({
           variant: 'success',
           title: 'Attendance Cancelled',
