@@ -29,10 +29,9 @@ function calculateDistance(lat1: number, lon1: number, lat2: number, lon2: numbe
 
 export function initializeData() {
   if (typeof window !== 'undefined') {
-    const data = localStorage.getItem(ATTENDANCE_KEY);
-    if (!data) {
-      localStorage.setItem(ATTENDANCE_KEY, JSON.stringify(mockStudentData));
-    }
+    // Always overwrite localStorage with fresh data to ensure consistency with the backend/source file.
+    // This will reset attendance state on page load, which is acceptable for this prototype.
+    localStorage.setItem(ATTENDANCE_KEY, JSON.stringify(mockStudentData));
   }
 }
 
