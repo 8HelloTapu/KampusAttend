@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useTransition } from 'react';
+import { useState, useEffect, useTransition, useRef } from 'react';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -9,7 +9,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, TimerOff, UserCheck } from 'lucide-react';
+import { Loader2, TimerOff, VideoOff } from 'lucide-react';
 import { findStudent, markPresent, isAttendanceWindowOpen } from '@/lib/attendanceStore';
 import { handleAttendanceVerification } from '@/app/actions';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
@@ -23,6 +23,8 @@ type AttendanceFormValues = z.infer<typeof attendanceSchema>;
 export function AttendanceForm() {
   const [isPending, startTransition] = useTransition();
   const [isWindowOpen, setIsWindowOpen] = useState(true);
+  const [hasCameraPermission, setHasCameraPermission] = useState<boolean | null>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   const { toast } = useToast();
 
@@ -42,6 +44,29 @@ export function AttendanceForm() {
         clearInterval(interval);
     };
   }, []);
+
+  useEffect(() => {
+    const getCameraPermission = async () => {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        setHasCameraPermission(true);
+
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+        }
+      } catch (error) {
+        console.error('Error accessing camera:', error);
+        setHasCameraPermission(false);
+        toast({
+          variant: 'destructive',
+          title: 'Camera Access Denied',
+          description: 'Please enable camera permissions in your browser settings to use this app.',
+        });
+      }
+    };
+
+    getCameraPermission();
+  }, [toast]);
 
   const onSubmit: SubmitHandler<AttendanceFormValues> = (data) => {
     if (!isWindowOpen) {
@@ -105,7 +130,7 @@ export function AttendanceForm() {
           <CardHeader>
             <CardTitle className="text-2xl font-headline">Mark Your Attendance</CardTitle>
             <CardDescription>
-              Enter your roll number to mark your attendance.
+              Enter your roll number and allow camera access. Verification is based on roll number only for this prototype.
             </CardDescription>
           </CardHeader>
 
@@ -122,9 +147,30 @@ export function AttendanceForm() {
           ) : (
             <>
               <CardContent className="space-y-6">
-                 <div className="flex justify-center p-8 bg-muted rounded-lg border-2 border-dashed">
-                    <UserCheck className="w-24 h-24 text-muted-foreground" />
+                <div className="flex justify-center items-center p-8 bg-muted rounded-lg border-2 border-dashed relative aspect-video">
+                  <video ref={videoRef} className="w-full h-full absolute inset-0 object-cover rounded-md" autoPlay muted playsInline />
+                  {hasCameraPermission === false && (
+                      <div className="flex flex-col items-center justify-center text-muted-foreground z-10 p-4 bg-background/80 rounded-lg">
+                          <VideoOff className="w-12 h-12 mb-2" />
+                          <p className="text-center">Camera permission denied.</p>
+                      </div>
+                  )}
+                  {hasCameraPermission === null && (
+                      <div className="flex flex-col items-center justify-center text-muted-foreground z-10">
+                          <Loader2 className="w-12 h-12 animate-spin" />
+                      </div>
+                  )}
                 </div>
+
+                {hasCameraPermission === false && (
+                    <Alert variant="destructive">
+                        <AlertTitle>Camera Access Required</AlertTitle>
+                        <AlertDescription>
+                            Please allow camera access in your browser settings to continue. The submit button is disabled until access is granted.
+                        </AlertDescription>
+                    </Alert>
+                )}
+
                 <FormField
                   control={form.control}
                   name="rollNumber"
@@ -132,7 +178,7 @@ export function AttendanceForm() {
                     <FormItem>
                       <FormLabel>Roll Number</FormLabel>
                       <FormControl>
-                        <Input placeholder="e.g., 23XV1M0501" {...field} />
+                        <Input placeholder="e.g., 23XV1M0501" {...field} disabled={hasCameraPermission !== true}/>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -140,7 +186,7 @@ export function AttendanceForm() {
                 />
               </CardContent>
               <CardFooter>
-                <Button type="submit" className="w-full" disabled={isPending}>
+                <Button type="submit" className="w-full" disabled={isPending || hasCameraPermission !== true}>
                   {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                   {isPending ? 'Verifying...' : 'Mark Attendance'}
                 </Button>
