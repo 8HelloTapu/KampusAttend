@@ -10,8 +10,8 @@ export default function LandingPage() {
       <Header />
       <main className="flex-1">
         <div className="relative flex h-full flex-col items-center justify-center overflow-hidden bg-background p-4">
-          {/* Background Grid */}
-          <div className="absolute inset-0 z-0 h-full w-full bg-background bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] [mask-image:radial-gradient(ellipse_50%_50%_at_50%_50%,#000_60%,transparent_100%)]"></div>
+          {/* Background Doodles */}
+          <div className="absolute inset-0 z-0 h-full w-full bg-background bg-[url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cg fill='none' stroke='hsl(var(--foreground))' stroke-width='1'%3E%3Cpath d='M0 0L80 80' stroke-dasharray='4 4' opacity='0.1'/%3E%3Cpath d='M80 0L0 80' stroke-dasharray='4 4' opacity='0.1'/%3E%3Ccircle cx='20' cy='20' r='2' opacity='0.2'/%3E%3Cpath d='M60 60L58 62L62 62L60 58Z' opacity='0.2'/%3E%3Cpath d='M10 70 L20 60 L30 70' opacity='0.2'/%3E%3Cpath d='M70 10 L60 20 L70 30' opacity='0.2' transform='rotate(90 65 20)'/%3E%3C/g%3E%3C/svg%3E&quot;)] [mask-image:radial-gradient(ellipse_50%_50%_at_50%_50%,#000_60%,transparent_100%)]"></div>
           
           <div className="z-10 flex flex-col items-center text-center">
             <div 
