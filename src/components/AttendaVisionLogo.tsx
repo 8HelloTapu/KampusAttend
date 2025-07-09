@@ -12,11 +12,15 @@ export default function KampusAttendLogo(props: SVGProps<SVGSVGElement>) {
       strokeLinejoin="round"
       {...props}
     >
-      <title>AttendaVision Logo</title>
-      <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4z"/>
-      <path d="M12 14c-4.42 0-8 1.79-8 4v2h16v-2c0-2.21-3.58-4-8-4z"/>
-      <path d="M22 10l-10-4-10 4 10 4 10-4z"/>
-      <path d="M6 10.5V16l6 3 6-3V10.5"/>
+      <title>KampusAttend Logo</title>
+      {/* Student Body */}
+      <path d="M12 14c-4.42 0-8 1.79-8 4v2h16v-2c0-2.21-3.58-4-8-4z" />
+      {/* Student Head */}
+      <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4z" />
+      {/* Graduation Cap */}
+      <path d="M22 6l-10-4-10 4 10 4 10-4z" />
+      {/* Tassel */}
+      <path d="M18 6v4l2 1" />
     </svg>
   );
 }
