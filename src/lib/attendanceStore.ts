@@ -28,11 +28,34 @@ function calculateDistance(lat1: number, lon1: number, lat2: number, lon2: numbe
 
 
 export function initializeData() {
-  if (typeof window !== 'undefined') {
-    // Always overwrite localStorage with fresh data to ensure consistency with the backend/source file.
-    // This will reset attendance state on page load, which is acceptable for this prototype.
-    localStorage.setItem(ATTENDANCE_KEY, JSON.stringify(mockStudentData));
-  }
+  if (typeof window === 'undefined') return;
+
+  const storedDataRaw = localStorage.getItem(ATTENDANCE_KEY);
+  const storedStudents: Student[] = storedDataRaw ? JSON.parse(storedDataRaw) : [];
+  
+  // Create a map of the current attendance statuses for easy lookup
+  const attendanceStatusMap = new Map<string, Partial<Student>>();
+  storedStudents.forEach(student => {
+    attendanceStatusMap.set(student.rollNumber.toLowerCase(), {
+        status: student.status,
+        location: student.location,
+        locationWarning: student.locationWarning
+    });
+  });
+
+  // Create a fresh student list from the source of truth (mockStudentData)
+  // and apply any existing attendance statuses. This prevents stale data issues.
+  const updatedStudents = mockStudentData.map(mockStudent => {
+    const existingStatus = attendanceStatusMap.get(mockStudent.rollNumber.toLowerCase());
+    return {
+      ...mockStudent,
+      status: existingStatus?.status || 'Absent',
+      location: existingStatus?.location,
+      locationWarning: existingStatus?.locationWarning || false,
+    };
+  });
+
+  localStorage.setItem(ATTENDANCE_KEY, JSON.stringify(updatedStudents));
 }
 
 export function getStudents(branch?: string): Student[] {

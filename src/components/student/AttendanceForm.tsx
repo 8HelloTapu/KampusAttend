@@ -10,7 +10,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, TimerOff, VideoOff, LocateFixed } from 'lucide-react';
-import { findStudent, markPresent, isAttendanceWindowOpen } from '@/lib/attendanceStore';
+import { findStudent, markPresent, isAttendanceWindowOpen, initializeData } from '@/lib/attendanceStore';
 import { handleAttendanceVerification } from '@/app/actions';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 
@@ -37,6 +37,10 @@ export function AttendanceForm() {
   });
 
   useEffect(() => {
+    // This function now correctly syncs the master student list from the code 
+    // with the session data in the browser, preventing stale data errors.
+    initializeData();
+
     const checkWindow = () => setIsWindowOpen(isAttendanceWindowOpen());
     checkWindow();
     const interval = setInterval(checkWindow, 10000); 
@@ -164,7 +168,7 @@ export function AttendanceForm() {
           <CardHeader>
             <CardTitle className="text-2xl font-headline">Mark Your Attendance</CardTitle>
             <CardDescription>
-              Enter your roll number and allow camera & location access. For this
+              Enter your roll number and allow camera &amp; location access. For this
               prototype, verification is based on roll number only. Image
               verification feature will be added soon.
             </CardDescription>
