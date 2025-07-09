@@ -39,7 +39,8 @@ export function initializeData() {
     attendanceStatusMap.set(student.rollNumber.toLowerCase(), {
         status: student.status,
         location: student.location,
-        locationWarning: student.locationWarning
+        locationWarning: student.locationWarning,
+        attendanceTime: student.attendanceTime,
     });
   });
 
@@ -47,11 +48,13 @@ export function initializeData() {
   // and apply any existing attendance statuses. This prevents stale data issues.
   const updatedStudents = mockStudentData.map(mockStudent => {
     const existingStatus = attendanceStatusMap.get(mockStudent.rollNumber.toLowerCase());
+    const isPresent = existingStatus?.status === 'Present';
     return {
       ...mockStudent,
-      status: existingStatus?.status || 'Absent',
-      location: existingStatus?.location,
-      locationWarning: existingStatus?.locationWarning || false,
+      status: isPresent ? 'Present' : 'Absent',
+      location: isPresent ? existingStatus.location : undefined,
+      locationWarning: isPresent ? existingStatus.locationWarning : false,
+      attendanceTime: isPresent ? existingStatus.attendanceTime : undefined,
     };
   });
 
@@ -90,6 +93,7 @@ export function markPresent(rollNumber: string, location?: {latitude: number, lo
 
   if (studentIndex > -1) {
     students[studentIndex].status = 'Present';
+    students[studentIndex].attendanceTime = new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
 
     if (location) {
         students[studentIndex].location = `${location.latitude.toFixed(4)}, ${location.longitude.toFixed(4)}`;

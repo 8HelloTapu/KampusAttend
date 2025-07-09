@@ -45,6 +45,7 @@ export function AttendanceOverview({ branch }: { branch: string }) {
               <TableHead>Name</TableHead>
               <TableHead>Roll Number</TableHead>
               <TableHead>Branch</TableHead>
+              <TableHead>Time Marked</TableHead>
               <TableHead className="text-right">Status</TableHead>
             </TableRow>
           </TableHeader>
@@ -60,6 +61,7 @@ export function AttendanceOverview({ branch }: { branch: string }) {
                 <TableCell className="font-medium">{student.name}</TableCell>
                 <TableCell className='font-code'>{student.rollNumber}</TableCell>
                 <TableCell>{student.branch}</TableCell>
+                <TableCell className="font-code">{student.attendanceTime || '—'}</TableCell>
                 <TableCell className="text-right">
                   <div className="flex items-center justify-end gap-2">
                     {student.locationWarning && (

@@ -13,7 +13,7 @@ import {z} from 'genkit';
 
 const AttendanceInquiryInputSchema = z.object({
   query: z.string().describe('The attendance-related question from the faculty member.'),
-  attendanceData: z.string().describe('The attendance data, e.g., a JSON string of roll numbers and presence status. This may also include a `locationWarning` flag.'),
+  attendanceData: z.string().describe('The attendance data, e.g., a JSON string of student info including roll number, status, locationWarning, and attendanceTime.'),
 });
 export type AttendanceInquiryInput = z.infer<typeof AttendanceInquiryInputSchema>;
 
@@ -34,8 +34,10 @@ const prompt = ai.definePrompt({
   You are provided with attendance data and a question from a faculty member.
   Use the attendance data to accurately answer the question.
 
-  The attendance data is a JSON string. Each object contains student info.
-  If a student has a 'locationWarning: true' field, it means their GPS location was far from the campus when they marked their attendance. You should mention this if it's relevant to the query (e.g., if asked about a specific student or about absentees).
+  The attendance data is a JSON string. Each object contains student info:
+  - 'status': "Present" or "Absent".
+  - 'attendanceTime': The time the student marked their attendance, if present.
+  - 'locationWarning: true': This field means their GPS location was far from the campus. Mention this if it is relevant.
 
   Attendance Data: {{{attendanceData}}}
   Question: {{{query}}}

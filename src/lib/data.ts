@@ -8,11 +8,12 @@ export interface Student {
   location?: string;
   locationWarning?: boolean;
   referenceImageUrl?: string;
+  attendanceTime?: string;
 }
 
 export const COLLEGE_LOCATION = {
-  latitude: 17.4947,
-  longitude: 78.3918,
+  latitude: 17.494793,
+  longitude: 78.390236,
 };
 
 export const ALL_BRANCHES = [

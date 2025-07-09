@@ -22,7 +22,14 @@ export function AttendanceQuery({ branch }: { branch: string }) {
 
     const liveStudentsForBranch = getStudents(branch);
     const attendanceDataString = JSON.stringify(
-      liveStudentsForBranch.map(s => ({ rollNumber: s.rollNumber, name: s.name, status: s.status, branch: s.branch }))
+      liveStudentsForBranch.map(s => ({
+        rollNumber: s.rollNumber,
+        name: s.name,
+        status: s.status,
+        branch: s.branch,
+        locationWarning: s.locationWarning,
+        attendanceTime: s.attendanceTime,
+      }))
     );
 
     startTransition(async () => {

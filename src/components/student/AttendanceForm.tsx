@@ -124,20 +124,21 @@ export function AttendanceForm() {
         }
   
         const { locationWarning } = markPresent(data.rollNumber, { latitude: coords.latitude, longitude: coords.longitude });
-        
+        const markedTime = new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+
         const successTitle = response.result?.message || 'Verification Successful!';
         if (locationWarning) {
           toast({
               variant: 'destructive',
               title: successTitle,
-              description: `Welcome, ${student.name}. Your location seems far from campus, but attendance has been recorded with a warning.`,
+              description: `Welcome, ${student.name}. Attendance recorded at ${markedTime}. Location seems far from campus.`,
               duration: 5000,
           });
         } else {
           toast({
               variant: 'success',
               title: successTitle,
-              description: `Welcome, ${student.name}. Your attendance has been recorded.`,
+              description: `Welcome, ${student.name}. Your attendance has been recorded at ${markedTime}.`,
           });
         }
         
