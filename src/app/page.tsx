@@ -10,7 +10,7 @@ export default function Home() {
         <KampusAttendLogo className="h-12 w-12" />
         <h1 className="font-headline">KampusAttend</h1>
       </div>
-      <p className="mb-12 max-w-2xl text-center text-lg text-foreground/80">
+      <p className="mb-6 max-w-2xl text-center text-lg text-foreground/80">
         Campus life. Digitally marked.
       </p>
       <div className="grid w-full max-w-4xl gap-8 md:grid-cols-2">

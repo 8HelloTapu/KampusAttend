@@ -73,7 +73,7 @@ export function AttendanceOverview({ branch }: { branch: string }) {
                       </Tooltip>
                     )}
                     <Badge variant={student.status === 'Present' ? 'success' : 'destructive'} className="items-center gap-2">
-                      <div className={`h-2 w-2 rounded-full ${student.status === 'Present' ? 'bg-[hsl(var(--chart-2))]' : 'bg-destructive'}`}></div>
+                      <div className={`h-2 w-2 rounded-full ${student.status === 'Present' ? 'bg-success-foreground' : 'bg-destructive-foreground'}`}></div>
                       <span>{student.status}</span>
                     </Badge>
                   </div>
