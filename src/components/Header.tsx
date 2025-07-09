@@ -11,8 +11,10 @@ export function Header() {
   const router = useRouter();
   const pathname = usePathname();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
+    setIsClient(true);
     const studentLogin = localStorage.getItem('isStudentLoggedIn') === 'true';
     const facultyLogin = localStorage.getItem('isFacultyLoggedIn') === 'true';
     setIsLoggedIn(studentLogin || facultyLogin);
@@ -41,7 +43,7 @@ export function Header() {
                 <Home className="h-5 w-5" />
               </Button>
             </Link>
-            {isLoggedIn && (
+            {isClient && isLoggedIn && (
               <Button variant="ghost" size="icon" aria-label="Logout" onClick={handleLogout}>
                 <LogOut className="h-5 w-5" />
               </Button>
