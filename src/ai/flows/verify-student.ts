@@ -75,21 +75,14 @@ const faceVerificationPrompt = ai.definePrompt({
     name: 'faceVerificationPrompt',
     input: { schema: VerifyFaceInputSchema },
     output: { schema: VerifyStudentOutputSchema },
-    prompt: `You are an advanced AI security assistant for an attendance system. Your task is to determine if two images contain the face of the same person.
+    prompt: `You are an AI assistant for a prototype application. Your primary goal is to verify if two images show the same person. For this prototype, you should be lenient in your comparison. Prioritize finding a match even if there are minor differences in lighting, angle, or expression.
 
-You will be given a trusted reference photo and a live photo from a webcam.
+Compare the reference photo with the live webcam photo.
 
-Carefully compare the faces in both images and determine if they match.
+Your response MUST be a JSON object with two fields: 'isMatch' (boolean) and 'message' (string).
 
-Your response MUST be in a valid JSON format that adheres to the following schema:
-{
-  "isMatch": boolean, // Set to true if the faces match, false otherwise.
-  "message": string // A brief explanation of the result.
-}
-
-- If you are confident the faces belong to the same person, set "isMatch" to true and provide a success message like "Face match confirmed."
-- If the faces do not match, or if you have low confidence, set "isMatch" to false and state that the faces do not match.
-- If a face is not clearly visible in the live photo, set "isMatch" to false and provide a message like "Face not clear in live photo. Please ensure your face is well-lit and centered."
+- If there is a reasonable similarity between the faces, set "isMatch" to true. For the message, say "Verification successful!".
+- If the faces are clearly different people, or if a face is not visible, set "isMatch" to false. For the message, explain briefly (e.g., "Faces do not appear to match.").
 
 Reference Photo: {{media url=referenceImageUrl}}
 Live Webcam Photo: {{media url=livePhotoDataUri}}`,
