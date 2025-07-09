@@ -44,7 +44,7 @@ export function Header() {
         <div className="flex flex-1 items-center justify-end">
           <nav className="flex items-center space-x-2">
             <Button asChild variant="ghost" size="icon" aria-label="Home">
-              <Link href="/auth">
+              <Link href="/">
                 <Home className="h-5 w-5" />
               </Link>
             </Button>
