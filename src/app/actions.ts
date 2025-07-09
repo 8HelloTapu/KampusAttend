@@ -12,13 +12,11 @@ import { z } from 'zod';
 
 const inquirySchema = z.object({
   query: z.string(),
-  pdfDataUri: z.string().optional(),
 });
 
 export async function handleAttendanceQuery(formData: FormData) {
   const parsed = inquirySchema.safeParse({
     query: formData.get('query'),
-    pdfDataUri: formData.get('pdfDataUri')?.toString(),
   });
   if (!parsed.success) {
     return { error: 'Invalid input.' };
@@ -34,7 +32,6 @@ export async function handleAttendanceQuery(formData: FormData) {
     const result = await attendanceInquiry({
       query: parsed.data.query,
       attendanceData: attendanceDataString,
-      pdfDataUri: parsed.data.pdfDataUri,
     });
     return { answer: result.answer };
   } catch (e) {
