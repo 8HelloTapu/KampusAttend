@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState } from 'react';
@@ -12,7 +11,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
-import { handleAbsenceReport } from '@/app/actions';
+import { addAbsenceReason } from '@/lib/attendanceStore';
 import { MessageSquareWarning, Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
@@ -36,15 +35,13 @@ export default function ReportAbsencePage() {
     },
   });
 
-  const onSubmit: SubmitHandler<AbsenceFormValues> = async (data) => {
+  const onSubmit: SubmitHandler<AbsenceFormValues> = (data) => {
     setIsSubmitting(true);
-    const formData = new FormData();
-    formData.append('rollNumber', data.rollNumber);
-    formData.append('reason', data.reason);
+    
+    // This is now a direct client-side call
+    const result = addAbsenceReason(data.rollNumber, data.reason);
 
-    const result = await handleAbsenceReport(formData);
-
-    if (result.error) {
+    if (!result.success) {
       toast({
         variant: 'destructive',
         title: 'Submission Failed',
