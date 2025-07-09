@@ -31,6 +31,7 @@ export function AttendanceQuery({ branch }: { branch: string }) {
         locationWarning: s.locationWarning,
         attendanceTime: s.attendanceTime,
         absenceReason: s.absenceReason,
+        wasCancelled: s.wasCancelled,
       }))
     );
 

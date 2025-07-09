@@ -28,7 +28,7 @@ export function AttendanceOverview({ branch }: { branch: string }) {
 
     const handleStorageUpdate = (event: StorageEvent) => {
       // Listen for changes to attendance data from other tabs
-      if (event.key === 'attendanceData') {
+      if (event.key === 'attendanceData' || event.key?.startsWith('notifications_')) {
         updateStudents();
       }
     };
