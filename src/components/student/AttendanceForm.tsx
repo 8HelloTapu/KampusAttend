@@ -27,6 +27,7 @@ export function AttendanceForm() {
   const [isLocating, setIsLocating] = useState(false);
   const [isWindowOpen, setIsWindowOpen] = useState(true);
   const [hasCameraPermission, setHasCameraPermission] = useState<boolean | null>(null);
+  const [placeholder, setPlaceholder] = useState('e.g., 23XV1M0545');
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const router = useRouter();
@@ -42,6 +43,13 @@ export function AttendanceForm() {
 
   useEffect(() => {
     initializeData();
+    
+    const studentBranch = localStorage.getItem('studentBranch');
+    if (studentBranch === 'CSE(DS)') {
+      setPlaceholder('e.g., 23XV1M6701');
+    } else {
+      setPlaceholder('e.g., 23XV1M0545');
+    }
 
     const checkWindow = () => setIsWindowOpen(isAttendanceWindowOpen());
     checkWindow();
@@ -261,7 +269,7 @@ export function AttendanceForm() {
                     <FormItem>
                       <FormLabel>Roll Number</FormLabel>
                       <FormControl>
-                        <Input placeholder="e.g., 23XV1M0545" {...field} disabled={hasCameraPermission !== true || isSubmitting}/>
+                        <Input placeholder={placeholder} {...field} disabled={hasCameraPermission !== true || isSubmitting}/>
                       </FormControl>
                       <FormMessage />
                     </FormItem>

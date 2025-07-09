@@ -11,8 +11,8 @@ export interface Student {
 }
 
 export const COLLEGE_LOCATION = {
-  latitude: 28.7041, // Rohini, Delhi (simulating a college location)
-  longitude: 77.1025,
+  latitude: 17.4594,
+  longitude: 78.3323,
 };
 
 export const ALL_BRANCHES = [
@@ -65,7 +65,7 @@ const cseStudents: Omit<Student, 'id' | 'avatarUrl' | 'status'>[] = [
     { name: 'J SAI MOKSHAGNA', rollNumber: '23XV1M0542', branch: 'B.Tech CSE' },
     { name: 'KRUPALI RAO KATARI', rollNumber: '23XV1M0543', branch: 'B.Tech CSE' },
     { name: 'BHARATULA SAI LAHARI', rollNumber: '23XV1M0544', branch: 'B.Tech CSE' },
-    { name: 'THAPASVI POOGURI', rollNumber: '23XV1M0545', branch: 'B.Tech CSE' },
+    { name: 'THAPASVI POOJARI', rollNumber: '23XV1M0545', branch: 'B.Tech CSE' },
     { name: 'KASIREDDY RUDRA VAMSI', rollNumber: '23XV1M0546', branch: 'B.Tech CSE' },
     { name: 'SHAIK TASNEEM', rollNumber: '23XV1M0547', branch: 'B.Tech CSE' },
     { name: 'N. HARSHA VARDHAN RAJU', rollNumber: '23XV1M0548', branch: 'B.Tech CSE' },
