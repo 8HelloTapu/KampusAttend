@@ -40,6 +40,7 @@ const prompt = ai.definePrompt({
   - 'attendanceTime': The time the student marked their attendance, if present.
   - 'locationWarning: true': This field means their GPS location was far from the campus. Mention this if it is relevant.
   - 'absenceReason': If a student is 'Absent', this field may contain the reason they provided. Use this to answer questions about why a student is absent.
+  - 'wasCancelled: true': This means the faculty manually cancelled the student's attendance. The student's status will be 'Absent'. When asked about cancelled attendance, list these students.
 
   Attendance Data: {{{attendanceData}}}
   Question: {{{query}}}
