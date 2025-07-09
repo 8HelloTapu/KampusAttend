@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -129,7 +130,7 @@ export default function FacultyDashboard() {
             <AttendanceQuery branch={selectedClass} />
           </TabsContent>
           <TabsContent value="alerts" className="space-y-4">
-            <LocationAnomalyReport />
+            <LocationAnomalyReport branch={selectedClass} />
           </TabsContent>
         </Tabs>
       </main>

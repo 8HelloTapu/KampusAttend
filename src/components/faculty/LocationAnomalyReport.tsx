@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useTransition } from 'react';
@@ -8,15 +9,15 @@ import { Loader2, Sparkles } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { getStudents } from '@/lib/attendanceStore';
 
-export function LocationAnomalyReport() {
+export function LocationAnomalyReport({ branch }: { branch: string }) {
     const [isPending, startTransition] = useTransition();
     const [report, setReport] = useState<string | null>(null);
     const { toast } = useToast();
 
     const runReport = () => {
         setReport(null);
-        const allStudents = getStudents();
-        const attendanceDataString = JSON.stringify(allStudents);
+        const studentsForBranch = getStudents(branch);
+        const attendanceDataString = JSON.stringify(studentsForBranch);
 
         startTransition(async () => {
             const formData = new FormData();
@@ -41,7 +42,7 @@ export function LocationAnomalyReport() {
             <CardHeader>
                 <CardTitle>Location Anomaly Report</CardTitle>
                 <CardDescription>
-                    Use AI to generate a report on students who marked their attendance from a location significantly far from campus.
+                    Use AI to generate a report for the selected class on students who marked their attendance from a location significantly far from campus.
                 </CardDescription>
             </CardHeader>
             <CardContent>

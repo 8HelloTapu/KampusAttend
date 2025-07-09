@@ -1,3 +1,4 @@
+
 // This is a client-side store that uses localStorage to simulate a database.
 import { mockStudentData, type Student, COLLEGE_LOCATION } from './data';
 
@@ -29,36 +30,8 @@ function calculateDistance(lat1: number, lon1: number, lat2: number, lon2: numbe
 
 export function initializeData() {
   if (typeof window === 'undefined') return;
-
-  const storedDataRaw = localStorage.getItem(ATTENDANCE_KEY);
-  const storedStudents: Student[] = storedDataRaw ? JSON.parse(storedDataRaw) : [];
-  
-  // Create a map of the current attendance statuses for easy lookup
-  const attendanceStatusMap = new Map<string, Partial<Student>>();
-  storedStudents.forEach(student => {
-    attendanceStatusMap.set(student.rollNumber.toLowerCase(), {
-        status: student.status,
-        location: student.location,
-        locationWarning: student.locationWarning,
-        attendanceTime: student.attendanceTime,
-    });
-  });
-
-  // Create a fresh student list from the source of truth (mockStudentData)
-  // and apply any existing attendance statuses. This prevents stale data issues.
-  const updatedStudents = mockStudentData.map(mockStudent => {
-    const existingStatus = attendanceStatusMap.get(mockStudent.rollNumber.toLowerCase());
-    const isPresent = existingStatus?.status === 'Present';
-    return {
-      ...mockStudent,
-      status: isPresent ? 'Present' : 'Absent',
-      location: isPresent ? existingStatus.location : undefined,
-      locationWarning: isPresent ? existingStatus.locationWarning : false,
-      attendanceTime: isPresent ? existingStatus.attendanceTime : undefined,
-    };
-  });
-
-  localStorage.setItem(ATTENDANCE_KEY, JSON.stringify(updatedStudents));
+  // Always reset to the base mock data for a fresh start for the evaluator.
+  localStorage.setItem(ATTENDANCE_KEY, JSON.stringify(mockStudentData));
 }
 
 export function getStudents(branch?: string): Student[] {
