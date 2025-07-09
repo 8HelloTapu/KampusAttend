@@ -3,8 +3,8 @@ import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 
 export const metadata: Metadata = {
-  title: 'AttendaVision',
-  description: 'AI-Powered Attendance System',
+  title: 'KampusAttend',
+  description: 'Campus life. Digitally marked.',
 };
 
 export default function RootLayout({

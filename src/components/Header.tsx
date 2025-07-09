@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
-import AttendaVisionLogo from './AttendaVisionLogo';
+import KampusAttendLogo from './AttendaVisionLogo';
 import { Button } from './ui/button';
 import { Home, LogOut } from 'lucide-react';
 
@@ -29,9 +29,9 @@ export function Header() {
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-14 items-center">
         <Link href="/" className="mr-6 flex items-center space-x-2">
-          <AttendaVisionLogo className="h-6 w-6 text-primary" />
+          <KampusAttendLogo className="h-6 w-6 text-primary" />
           <span className="hidden font-bold sm:inline-block font-headline">
-            AttendaVision
+            KampusAttend
           </span>
         </Link>
         <div className="flex flex-1 items-center justify-end">

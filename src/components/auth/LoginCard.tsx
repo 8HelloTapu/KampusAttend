@@ -11,7 +11,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
-import AttendaVisionLogo from '../AttendaVisionLogo';
+import KampusAttendLogo from '../AttendaVisionLogo';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 const loginSchema = z.object({
@@ -77,7 +77,7 @@ export function LoginCard({ userType, expectedUsername, expectedPassword, redire
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <CardHeader className="text-center">
             <div className="mb-4 flex justify-center">
-              <AttendaVisionLogo className="h-10 w-10 text-primary" />
+              <KampusAttendLogo className="h-10 w-10 text-primary" />
             </div>
             <CardTitle className="text-2xl font-headline">{userType} Login</CardTitle>
             <CardDescription>

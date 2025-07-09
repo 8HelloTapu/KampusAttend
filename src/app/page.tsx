@@ -1,17 +1,17 @@
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Users, UserCog } from 'lucide-react';
-import AttendaVisionLogo from '@/components/AttendaVisionLogo';
+import KampusAttendLogo from '@/components/AttendaVisionLogo';
 
 export default function Home() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-background p-4">
       <div className="mb-8 flex items-center gap-4 text-4xl font-bold text-primary">
-        <AttendaVisionLogo className="h-12 w-12" />
-        <h1 className="font-headline">AttendaVision</h1>
+        <KampusAttendLogo className="h-12 w-12" />
+        <h1 className="font-headline">KampusAttend</h1>
       </div>
       <p className="mb-12 max-w-2xl text-center text-lg text-foreground/80">
-        Seamless attendance tracking powered by AI. Choose your portal to get started.
+        Campus life. Digitally marked.
       </p>
       <div className="grid w-full max-w-4xl gap-8 md:grid-cols-2">
         <Link href="/login/student">
