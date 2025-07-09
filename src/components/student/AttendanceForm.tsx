@@ -242,7 +242,7 @@ export function AttendanceForm() {
                 <AlertTitle>Attendance Window Closed</AlertTitle>
                 <AlertDescription>
                   <p>The time limit for marking attendance has passed. Please contact your faculty.</p>
-                  <p className="mt-2 text-xs italic">(Evaluator: Please go to the Faculty Dashboard and click 'Start Attendance' to open the window.)</p>
+                  <p className="mt-2 text-xs font-semibold text-destructive-foreground">(Evaluator: Please go to the Faculty Dashboard and click 'Start Attendance' to open the window.)</p>
                 </AlertDescription>
               </Alert>
             </CardContent>
