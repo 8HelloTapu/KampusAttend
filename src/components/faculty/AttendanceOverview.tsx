@@ -7,15 +7,15 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { initializeData, getStudents } from '@/lib/attendanceStore';
 
-export function AttendanceOverview() {
+export function AttendanceOverview({ branch }: { branch: string }) {
   const [students, setStudents] = useState<Student[]>([]);
 
   useEffect(() => {
     initializeData();
-    setStudents(getStudents());
+    setStudents(getStudents(branch));
 
     const handleStorageUpdate = () => {
-      setStudents(getStudents());
+      setStudents(getStudents(branch));
     };
 
     window.addEventListener('storageUpdate', handleStorageUpdate);
@@ -23,7 +23,7 @@ export function AttendanceOverview() {
     return () => {
       window.removeEventListener('storageUpdate', handleStorageUpdate);
     };
-  }, []);
+  }, [branch]);
 
   const getInitials = (name: string) => {
     const names = name.split(' ');
@@ -41,6 +41,7 @@ export function AttendanceOverview() {
             <TableHead className="w-[80px]">Photo</TableHead>
             <TableHead>Name</TableHead>
             <TableHead>Roll Number</TableHead>
+            <TableHead>Branch</TableHead>
             <TableHead className="text-right">Status</TableHead>
           </TableRow>
         </TableHeader>
@@ -55,6 +56,7 @@ export function AttendanceOverview() {
               </TableCell>
               <TableCell className="font-medium">{student.name}</TableCell>
               <TableCell className='font-code'>{student.rollNumber}</TableCell>
+              <TableCell>{student.branch}</TableCell>
               <TableCell className="text-right">
                 <Badge variant={student.status === 'Present' ? 'secondary' : 'destructive'} className="items-center gap-2">
                   <div className={`h-2 w-2 rounded-full ${student.status === 'Present' ? 'bg-[hsl(var(--chart-2))]' : 'bg-destructive'}`}></div>

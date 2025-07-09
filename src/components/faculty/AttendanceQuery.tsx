@@ -7,8 +7,9 @@ import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Loader2, Sparkles } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { getStudents } from '@/lib/attendanceStore';
 
-export function AttendanceQuery() {
+export function AttendanceQuery({ branch }: { branch: string }) {
   const [isPending, startTransition] = useTransition();
   const [response, setResponse] = useState('');
   const [query, setQuery] = useState('');
@@ -19,9 +20,15 @@ export function AttendanceQuery() {
     if (!query.trim()) return;
     setResponse('');
 
+    const liveStudentsForBranch = getStudents(branch);
+    const attendanceDataString = JSON.stringify(
+      liveStudentsForBranch.map(s => ({ rollNumber: s.rollNumber, name: s.name, status: s.status, branch: s.branch }))
+    );
+
     startTransition(async () => {
       const formData = new FormData();
       formData.append('query', query);
+      formData.append('attendanceData', attendanceDataString);
       const result = await handleAttendanceQuery(formData);
 
       if (result.error) {
@@ -43,7 +50,7 @@ export function AttendanceQuery() {
         <CardHeader>
           <CardTitle>AI Attendance Assistant</CardTitle>
           <CardDescription>
-            Ask questions about attendance data. The AI has context on all students.
+            Ask questions about attendance data for the selected class. The AI has live context on all students.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">

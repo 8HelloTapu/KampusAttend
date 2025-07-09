@@ -3,35 +3,28 @@
 import { attendanceInquiry } from '@/ai/flows/attendance-inquiry';
 import { absenteeAlert } from '@/ai/flows/absentee-alert';
 import { verifyStudent } from '@/ai/flows/verify-student';
-import { mockStudentData, absenteeStudent } from '@/lib/data';
+import { absenteeStudent } from '@/lib/data';
 import { z } from 'zod';
-
-// Note: This file uses mockStudentData. For a fully connected experience, 
-// it should use a shared data source that the student portal can update.
-// The live attendance table is updated via client-side state management.
 
 const inquirySchema = z.object({
   query: z.string(),
+  attendanceData: z.string(),
 });
 
 export async function handleAttendanceQuery(formData: FormData) {
   const parsed = inquirySchema.safeParse({
     query: formData.get('query'),
+    attendanceData: formData.get('attendanceData'),
   });
+
   if (!parsed.success) {
     return { error: 'Invalid input.' };
   }
 
   try {
-    // The AI assistant uses the static mock data for its context.
-    // A real implementation would fetch live data from a database here.
-    const attendanceDataString = JSON.stringify(
-      mockStudentData.map(s => ({ rollNumber: s.rollNumber, name: s.name, status: s.status }))
-    );
-
     const result = await attendanceInquiry({
       query: parsed.data.query,
-      attendanceData: attendanceDataString,
+      attendanceData: parsed.data.attendanceData,
     });
     return { answer: result.answer };
   } catch (e) {

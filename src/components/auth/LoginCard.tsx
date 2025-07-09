@@ -12,10 +12,12 @@ import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
 import AttendaVisionLogo from '../AttendaVisionLogo';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 const loginSchema = z.object({
   username: z.string().min(1, 'Username is required.'),
   password: z.string().min(1, 'Password is required.'),
+  subject: z.string().optional(),
 });
 
 type LoginFormValues = z.infer<typeof loginSchema>;
@@ -26,9 +28,10 @@ interface LoginCardProps {
   expectedPassword: string;
   redirectPath: string;
   authKey: string;
+  subjects?: { value: string; label: string }[];
 }
 
-export function LoginCard({ userType, expectedUsername, expectedPassword, redirectPath, authKey }: LoginCardProps) {
+export function LoginCard({ userType, expectedUsername, expectedPassword, redirectPath, authKey, subjects }: LoginCardProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
@@ -38,6 +41,7 @@ export function LoginCard({ userType, expectedUsername, expectedPassword, redire
     defaultValues: {
       username: '',
       password: '',
+      subject: subjects?.[0]?.value || '',
     },
   });
 
@@ -46,6 +50,9 @@ export function LoginCard({ userType, expectedUsername, expectedPassword, redire
     setTimeout(() => {
       if (data.username === expectedUsername && data.password === expectedPassword) {
         localStorage.setItem(authKey, 'true');
+        if (userType === 'Faculty' && data.subject) {
+          localStorage.setItem('facultyClass', data.subject);
+        }
         toast({
           title: 'Login Successful',
           description: `Welcome to the ${userType} Portal.`,
@@ -106,6 +113,30 @@ export function LoginCard({ userType, expectedUsername, expectedPassword, redire
                 </FormItem>
               )}
             />
+             {userType === 'Faculty' && subjects && (
+              <FormField
+                control={form.control}
+                name="subject"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Subject/Class</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select a class" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {subjects.map(s => (
+                          <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
           </CardContent>
           <CardFooter>
             <Button type="submit" className="w-full" disabled={isSubmitting}>

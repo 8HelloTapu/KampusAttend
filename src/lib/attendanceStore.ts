@@ -2,6 +2,12 @@
 import { mockStudentData, type Student } from './data';
 
 const ATTENDANCE_KEY = 'attendanceData';
+const SESSION_KEY = 'attendanceSession';
+
+interface AttendanceSession {
+  startTime: string;
+  isOpen: boolean;
+}
 
 export function initializeData() {
   if (typeof window !== 'undefined') {
@@ -12,12 +18,21 @@ export function initializeData() {
   }
 }
 
-export function getStudents(): Student[] {
+export function getStudents(branch?: string): Student[] {
   if (typeof window === 'undefined') {
-    return mockStudentData;
+    const students = mockStudentData;
+    if (branch) {
+      return students.filter(s => s.branch === branch);
+    }
+    return students;
   }
   const data = localStorage.getItem(ATTENDANCE_KEY);
-  return data ? JSON.parse(data) : mockStudentData;
+  const students: Student[] = data ? JSON.parse(data) : mockStudentData;
+
+  if (branch) {
+    return students.filter(s => s.branch === branch);
+  }
+  return students;
 }
 
 export function findStudent(rollNumber: string): Student | undefined {
@@ -38,4 +53,34 @@ export function markPresent(rollNumber: string): boolean {
     return true;
   }
   return false;
+}
+
+// === Attendance Session Management ===
+
+export function startAttendanceSession() {
+  if (typeof window !== 'undefined') {
+    const session: AttendanceSession = {
+      startTime: new Date().toISOString(),
+      isOpen: true,
+    };
+    localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+    window.dispatchEvent(new Event('storageUpdate'));
+  }
+}
+
+export function getAttendanceSession(): AttendanceSession | null {
+   if (typeof window === 'undefined') return null;
+   const data = localStorage.getItem(SESSION_KEY);
+   return data ? JSON.parse(data) : null;
+}
+
+export function isAttendanceWindowOpen(): boolean {
+    const session = getAttendanceSession();
+    if (!session || !session.isOpen) return false;
+
+    const now = new Date();
+    const startTime = new Date(session.startTime);
+    const diffInMinutes = (now.getTime() - startTime.getTime()) / (1000 * 60);
+
+    return diffInMinutes <= 30;
 }
