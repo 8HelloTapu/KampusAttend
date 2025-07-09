@@ -53,10 +53,19 @@ export function AttendanceForm() {
 
     const checkWindow = () => setIsWindowOpen(isAttendanceWindowOpen());
     checkWindow();
+    
+    const handleStorageChange = (event: StorageEvent) => {
+      if (event.key === 'attendanceSession') {
+        checkWindow();
+      }
+    };
+    
+    window.addEventListener('storage', handleStorageChange);
     const interval = setInterval(checkWindow, 10000); 
 
     return () => {
         clearInterval(interval);
+        window.removeEventListener('storage', handleStorageChange);
     };
   }, []);
 

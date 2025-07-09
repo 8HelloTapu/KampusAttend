@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect, useTransition } from 'react';
@@ -21,16 +22,20 @@ export function AttendanceOverview({ branch }: { branch: string }) {
 
   useEffect(() => {
     initializeData();
-    setStudents(getStudents(branch));
+    const updateStudents = () => setStudents(getStudents(branch));
+    updateStudents();
 
-    const handleStorageUpdate = () => {
-      setStudents(getStudents(branch));
+    const handleStorageUpdate = (event: StorageEvent) => {
+      // Listen for changes to attendance data from other tabs
+      if (event.key === 'attendanceData') {
+        updateStudents();
+      }
     };
 
-    window.addEventListener('storageUpdate', handleStorageUpdate);
+    window.addEventListener('storage', handleStorageUpdate);
 
     return () => {
-      window.removeEventListener('storageUpdate', handleStorageUpdate);
+      window.removeEventListener('storage', handleStorageUpdate);
     };
   }, [branch]);
   
@@ -57,6 +62,8 @@ export function AttendanceOverview({ branch }: { branch: string }) {
         });
       }
       setCancellingRollNumber(null);
+      // Manually refresh the student list after the action to update UI
+      setStudents(getStudents(branch));
     });
   }
 

@@ -34,16 +34,21 @@ export default function FacultyDashboard() {
       if (storedClass && ALL_CLASSES.some(c => c.value === storedClass)) {
         setSelectedClass(storedClass);
       }
-      setSessionActive(isAttendanceWindowOpen());
+      
+      const checkSession = () => setSessionActive(isAttendanceWindowOpen());
+      checkSession();
 
-      const handleStorageUpdate = () => {
-        setSessionActive(isAttendanceWindowOpen());
+      const handleStorageUpdate = (event: StorageEvent) => {
+        if (event.key === 'attendanceSession') {
+          checkSession();
+        }
       };
-      window.addEventListener('storageUpdate', handleStorageUpdate);
-      const interval = setInterval(() => setSessionActive(isAttendanceWindowOpen()), 5000);
+
+      window.addEventListener('storage', handleStorageUpdate);
+      const interval = setInterval(checkSession, 5000);
 
       return () => {
-        window.removeEventListener('storageUpdate', handleStorageUpdate);
+        window.removeEventListener('storage', handleStorageUpdate);
         clearInterval(interval);
       };
     }

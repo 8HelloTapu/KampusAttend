@@ -80,7 +80,6 @@ export function markPresent(rollNumber: string, location?: {latitude: number, lo
     }
 
     localStorage.setItem(ATTENDANCE_KEY, JSON.stringify(students));
-    window.dispatchEvent(new Event('storageUpdate')); // Notify other components
     return { locationWarning };
   }
   return { locationWarning: false };
@@ -99,7 +98,6 @@ export function markAbsent(rollNumber: string) {
     students[studentIndex].locationWarning = false;
 
     localStorage.setItem(ATTENDANCE_KEY, JSON.stringify(students));
-    window.dispatchEvent(new Event('storageUpdate')); // Notify other components
   }
 }
 
@@ -137,7 +135,6 @@ export function startAttendanceSession() {
       isOpen: true,
     };
     localStorage.setItem(SESSION_KEY, JSON.stringify(session));
-    window.dispatchEvent(new Event('storageUpdate'));
   }
 }
 
