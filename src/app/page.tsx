@@ -5,7 +5,7 @@ import { MoveRight } from 'lucide-react';
 import { Header } from '@/components/Header';
 
 // SVG content for a subtle grid pattern. It uses CSS variables for theme-aware colors.
-const patternSvg = `<svg xmlns='http://www.w3.org/2000/svg'><defs><pattern id='p' patternUnits='userSpaceOnUse' width='20' height='20'><path d='M0 0h20v20H0z' fill='none' stroke='hsl(var(--foreground))' stroke-opacity='0.1' stroke-width='1'/></pattern></defs><rect width='100%' height='100%' fill='url(#p)'/></svg>`;
+const patternSvg = `<svg xmlns='http://www.w3.org/2000/svg'><defs><pattern id='p' patternUnits='userSpaceOnUse' width='20' height='20'><path d='M0 0h20v20H0z' fill='none' stroke='hsl(var(--foreground))' stroke-opacity='0.2' stroke-width='1'/></pattern></defs><rect width='100%' height='100%' fill='url(#p)'/></svg>`;
 const encodedSvg = encodeURIComponent(patternSvg).replace(/'/g, "%27").replace(/"/g, "%22");
 const dataUri = `url("data:image/svg+xml,${encodedSvg}")`;
 
