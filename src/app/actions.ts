@@ -2,6 +2,7 @@
 
 import { attendanceInquiry } from '@/ai/flows/attendance-inquiry';
 import { absenteeAlert } from '@/ai/flows/absentee-alert';
+import { verifyStudent } from '@/ai/flows/verify-student';
 import { mockStudentData, absenteeStudent } from '@/lib/data';
 import { z } from 'zod';
 
@@ -44,5 +45,29 @@ export async function handleAbsenteeAlert() {
     } catch(e) {
         console.error(e);
         return { error: "Failed to run absentee alert."}
+    }
+}
+
+const verificationSchema = z.object({
+  rollNumber: z.string(),
+  capturedPhotoDataUri: z.string(),
+});
+
+export async function handleAttendanceVerification(formData: FormData) {
+    const parsed = verificationSchema.safeParse({
+        rollNumber: formData.get('rollNumber'),
+        capturedPhotoDataUri: formData.get('capturedPhotoDataUri'),
+    });
+
+    if (!parsed.success || !parsed.data.capturedPhotoDataUri) {
+        return { error: 'Invalid input. Image and roll number are required.' };
+    }
+    
+    try {
+        const result = await verifyStudent(parsed.data);
+        return { result };
+    } catch (e) {
+        console.error(e);
+        return { error: 'An unexpected error occurred during AI verification.' };
     }
 }

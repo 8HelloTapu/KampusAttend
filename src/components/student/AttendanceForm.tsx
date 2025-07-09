@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useTransition } from 'react';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -13,6 +13,7 @@ import { Camera, MapPin, Loader2, VideoOff, RefreshCw } from 'lucide-react';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import { findStudent, markPresent } from '@/lib/attendanceStore';
+import { handleAttendanceVerification } from '@/app/actions';
 
 const attendanceSchema = z.object({
   rollNumber: z.string().min(1, 'Roll number is required.'),
@@ -26,6 +27,7 @@ export function AttendanceForm() {
   const [locationError, setLocationError] = useState<string | null>(null);
   const [hasCameraPermission, setHasCameraPermission] = useState<boolean | null>(null);
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
+  const [isPending, startTransition] = useTransition();
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -130,27 +132,49 @@ export function AttendanceForm() {
 
     setIsSubmitting(true);
     
-    // Simulate server verification
-    setTimeout(() => {
-      setIsSubmitting(false);
-      const student = findStudent(data.rollNumber);
+    startTransition(async () => {
+      const formData = new FormData();
+      formData.append('rollNumber', data.rollNumber);
+      formData.append('capturedPhotoDataUri', capturedImage);
 
-      if (student) {
-        markPresent(data.rollNumber);
+      const response = await handleAttendanceVerification(formData);
+      setIsSubmitting(false);
+
+      if (response.error) {
         toast({
-          title: 'Attendance Marked!',
-          description: `Welcome, ${student.name}. Your attendance has been recorded.`,
+          variant: 'destructive',
+          title: 'Error',
+          description: response.error,
         });
-        form.reset();
-        handleRetake();
+        return;
+      }
+
+      if (response.result?.isMatch) {
+        const student = findStudent(data.rollNumber);
+        if (student) {
+          markPresent(data.rollNumber);
+          toast({
+            title: 'Verification Successful!',
+            description: `Welcome, ${student.name}. Your attendance has been recorded.`,
+          });
+          form.reset();
+          handleRetake();
+        } else {
+          // This case is unlikely if the flow is working, but it's a good fallback.
+          toast({
+            variant: 'destructive',
+            title: 'Verification Error',
+            description: 'Could not find student data after verification.',
+          });
+        }
       } else {
         toast({
           variant: 'destructive',
           title: 'Verification Failed',
-          description: 'Roll number not found. Please try again.',
+          description: response.result?.message || 'Could not verify your identity.',
         });
       }
-    }, 1500);
+    });
   };
 
   return (
@@ -160,7 +184,7 @@ export function AttendanceForm() {
           <CardHeader>
             <CardTitle className="text-2xl font-headline">Mark Your Attendance</CardTitle>
             <CardDescription>
-              Capture your image for verification and enter your roll number.
+              Capture your image for AI verification and enter your roll number.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
@@ -223,9 +247,9 @@ export function AttendanceForm() {
             )}
           </CardContent>
           <CardFooter>
-            <Button type="submit" className="w-full" disabled={isSubmitting || !capturedImage || !location}>
-              {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              {isSubmitting ? 'Verifying...' : 'Mark Attendance'}
+            <Button type="submit" className="w-full" disabled={isSubmitting || isPending || !capturedImage || !location}>
+              {(isSubmitting || isPending) && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              {(isSubmitting || isPending) ? 'Verifying with AI...' : 'Mark Attendance'}
             </Button>
           </CardFooter>
         </form>
