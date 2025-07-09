@@ -42,6 +42,7 @@ export function AttendanceForm() {
   });
 
   useEffect(() => {
+    // This now correctly only runs if data is not already in localStorage
     initializeData();
     
     const studentBranch = localStorage.getItem('studentBranch');
