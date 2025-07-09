@@ -65,7 +65,7 @@ const cseStudents: Omit<Student, 'id' | 'avatarUrl' | 'status'>[] = [
     { name: 'J SAI MOKSHAGNA', rollNumber: '23XV1M0542', branch: 'B.Tech CSE' },
     { name: 'KRUPALI RAO KATARI', rollNumber: '23XV1M0543', branch: 'B.Tech CSE' },
     { name: 'BHARATULA SAI LAHARI', rollNumber: '23XV1M0544', branch: 'B.Tech CSE' },
-    { name: 'THAPASVI POOGURI', rollNumber: '23XV1M0545', branch: 'B.Tech CSE', referenceImageUrl: 'https://i.imgur.com/A52nZ5C.png' },
+    { name: 'THAPASVI POOGURI', rollNumber: '23XV1M0545', branch: 'B.Tech CSE' },
     { name: 'KASIREDDY RUDRA VAMSI', rollNumber: '23XV1M0546', branch: 'B.Tech CSE' },
     { name: 'SHAIK TASNEEM', rollNumber: '23XV1M0547', branch: 'B.Tech CSE' },
     { name: 'N. HARSHA VARDHAN RAJU', rollNumber: '23XV1M0548', branch: 'B.Tech CSE' },

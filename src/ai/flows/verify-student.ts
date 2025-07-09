@@ -23,7 +23,7 @@ const VerifyStudentInputSchema = z.object({
 export type VerifyStudentInput = z.infer<typeof VerifyStudentInputSchema>;
 
 const VerifyStudentOutputSchema = z.object({
-  isMatch: z.boolean().describe('Whether the student is found and the face matches.'),
+  isMatch: z.boolean().describe('Whether the student is found.'),
   message: z.string().describe('A message explaining the verification result.'),
 });
 export type VerifyStudentOutput = z.infer<typeof VerifyStudentOutputSchema>;
@@ -39,66 +39,10 @@ export async function verifyStudent(input: VerifyStudentInput): Promise<VerifySt
     };
   }
 
-  // If the student has a reference image, use the AI-powered face verification.
-  if (student.referenceImageUrl && input.livePhotoDataUri) {
-    try {
-      const result = await verifyFaceFlow({
-          referenceImageUrl: student.referenceImageUrl,
-          livePhotoDataUri: input.livePhotoDataUri,
-      });
-      return result;
-    } catch (e) {
-      console.error("Face verification flow failed:", e);
-      return {
-        isMatch: false,
-        message: "The AI verification system encountered an error. Please try again.",
-      }
-    }
-  }
-
-  // Fallback for students without a reference image (prototype behavior).
+  // For this prototype, we are only verifying by roll number.
+  // The live photo is captured in the UI but not used for verification yet.
   return {
     isMatch: true,
-    message: 'Verification successful (Roll Number only).',
+    message: 'Verification successful!',
   };
 }
-
-
-// Define the specific input for the face verification part of the flow.
-const VerifyFaceInputSchema = z.object({
-    referenceImageUrl: z.string().url().describe("The URL of the student's reference photo."),
-    livePhotoDataUri: z.string().describe("A snapshot from the student's webcam, as a data URI that must include a MIME type and use Base64 encoding. Expected format: 'data:<mimetype>;base64,<encoded_data>'."),
-});
-
-
-const faceVerificationPrompt = ai.definePrompt({
-    name: 'faceVerificationPrompt',
-    input: { schema: VerifyFaceInputSchema },
-    output: { schema: VerifyStudentOutputSchema },
-    prompt: `You are an AI assistant for a prototype application. Your primary goal is to verify if two images show the same person. For this prototype, you should be lenient in your comparison. Prioritize finding a match even if there are minor differences in lighting, angle, or expression.
-
-Compare the reference photo with the live webcam photo.
-
-Your response MUST be a JSON object with two fields: 'isMatch' (boolean) and 'message' (string).
-
-- If there is a reasonable similarity between the faces, set "isMatch" to true. For the message, say "Verification successful!".
-- If the faces are clearly different people, or if a face is not visible, set "isMatch" to false. For the message, explain briefly (e.g., "Faces do not appear to match.").
-
-Reference Photo: {{media url=referenceImageUrl}}
-Live Webcam Photo: {{media url=livePhotoDataUri}}`,
-});
-
-const verifyFaceFlow = ai.defineFlow(
-  {
-    name: 'verifyFaceFlow',
-    inputSchema: VerifyFaceInputSchema,
-    outputSchema: VerifyStudentOutputSchema,
-  },
-  async (input) => {
-    const { output } = await faceVerificationPrompt(input);
-    if (!output) {
-      throw new Error("AI model did not return a valid JSON response.");
-    }
-    return output;
-  }
-);

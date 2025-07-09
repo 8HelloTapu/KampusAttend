@@ -212,7 +212,7 @@ export function AttendanceForm() {
           <CardHeader>
             <CardTitle className="text-2xl font-headline">Mark Your Attendance</CardTitle>
             <CardDescription>
-              Enter your roll number and allow camera &amp; location access. The system will use facial recognition to verify your identity.
+              Enter your roll number and allow camera access. Verification is based on roll number only for this prototype. Facial recognition will be added soon.
             </CardDescription>
           </CardHeader>
 
