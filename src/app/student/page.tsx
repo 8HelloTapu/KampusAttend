@@ -1,10 +1,14 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { Header } from '@/components/Header';
 import { AttendanceForm } from '@/components/student/AttendanceForm';
 import { Skeleton } from '@/components/ui/skeleton';
+import { buttonVariants } from '@/components/ui/button';
+import { Bell } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 export default function StudentDashboard() {
   const router = useRouter();
@@ -40,12 +44,14 @@ export default function StudentDashboard() {
     <div className="flex min-h-screen w-full flex-col">
       <Header />
       <main className="flex flex-1 flex-col items-center justify-center bg-background p-4 md:p-8">
-        <AttendanceForm />
+        <div className="w-full max-w-md space-y-4">
+            <AttendanceForm />
+            <Link href="/student/notifications" className={cn(buttonVariants({ variant: "outline" }), "w-full")}>
+                <Bell className="mr-2 h-4 w-4"/>
+                Check Notifications
+            </Link>
+        </div>
       </main>
     </div>
   );
 }
-
-// React was not imported, so I added it.
-import { useState } from 'react';
-

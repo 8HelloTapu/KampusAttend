@@ -113,6 +113,48 @@ export function markPresent(rollNumber: string, location?: {latitude: number, lo
   return { locationWarning: false };
 }
 
+export function markAbsent(rollNumber: string) {
+  if (typeof window === 'undefined') return;
+  
+  const students = getStudents();
+  const studentIndex = students.findIndex(s => s.rollNumber.toLowerCase() === rollNumber.toLowerCase());
+  
+  if (studentIndex > -1) {
+    students[studentIndex].status = 'Absent';
+    students[studentIndex].attendanceTime = undefined;
+    students[studentIndex].location = undefined;
+    students[studentIndex].locationWarning = false;
+
+    localStorage.setItem(ATTENDANCE_KEY, JSON.stringify(students));
+    window.dispatchEvent(new Event('storageUpdate')); // Notify other components
+  }
+}
+
+// === Notification Management ===
+const NOTIFICATION_PREFIX = 'notifications_';
+
+export function addNotification(rollNumber: string, message: string) {
+  if (typeof window === 'undefined') return;
+  const key = `${NOTIFICATION_PREFIX}${rollNumber.toLowerCase()}`;
+  const existing = localStorage.getItem(key);
+  const notifications: string[] = existing ? JSON.parse(existing) : [];
+  notifications.push(message);
+  localStorage.setItem(key, JSON.stringify(notifications));
+}
+
+export function getNotifications(rollNumber: string): string[] {
+  if (typeof window === 'undefined') return [];
+  const key = `${NOTIFICATION_PREFIX}${rollNumber.toLowerCase()}`;
+  const data = localStorage.getItem(key);
+  return data ? JSON.parse(data) : [];
+}
+
+export function clearNotifications(rollNumber: string) {
+  if (typeof window === 'undefined') return;
+  const key = `${NOTIFICATION_PREFIX}${rollNumber.toLowerCase()}`;
+  localStorage.removeItem(key);
+}
+
 // === Attendance Session Management ===
 
 export function startAttendanceSession() {
