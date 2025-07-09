@@ -30,8 +30,10 @@ function calculateDistance(lat1: number, lon1: number, lat2: number, lon2: numbe
 
 export function initializeData() {
   if (typeof window === 'undefined') return;
-  // Always reset to the base mock data for a fresh start for the evaluator.
-  localStorage.setItem(ATTENDANCE_KEY, JSON.stringify(mockStudentData));
+  // Only initialize if data doesn't exist, to preserve state across page loads.
+  if (!localStorage.getItem(ATTENDANCE_KEY)) {
+    localStorage.setItem(ATTENDANCE_KEY, JSON.stringify(mockStudentData));
+  }
 }
 
 export function getStudents(branch?: string): Student[] {

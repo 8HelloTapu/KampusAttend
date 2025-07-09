@@ -110,7 +110,6 @@ export function AttendanceForm() {
           return;
         }
         
-        initializeData(); 
         const student = findStudent(data.rollNumber);
 
         if (!student) {
