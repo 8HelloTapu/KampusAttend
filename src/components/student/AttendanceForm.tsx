@@ -9,7 +9,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, TimerOff, VideoOff } from 'lucide-react';
+import { Loader2, TimerOff, VideoOff, LocateFixed } from 'lucide-react';
 import { findStudent, markPresent, isAttendanceWindowOpen } from '@/lib/attendanceStore';
 import { handleAttendanceVerification } from '@/app/actions';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
@@ -22,6 +22,7 @@ type AttendanceFormValues = z.infer<typeof attendanceSchema>;
 
 export function AttendanceForm() {
   const [isPending, startTransition] = useTransition();
+  const [isLocating, setIsLocating] = useState(false);
   const [isWindowOpen, setIsWindowOpen] = useState(true);
   const [hasCameraPermission, setHasCameraPermission] = useState<boolean | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -68,17 +69,13 @@ export function AttendanceForm() {
     getCameraPermission();
   }, [toast]);
 
-  const onSubmit: SubmitHandler<AttendanceFormValues> = (data) => {
-    if (!isWindowOpen) {
-      toast({ variant: 'destructive', title: 'Attendance Window Closed', description: 'The time to mark attendance has passed.' });
-      return;
-    }
-
+  const handleVerificationAndMarking = (data: AttendanceFormValues, coords: GeolocationCoordinates) => {
     startTransition(async () => {
       const formData = new FormData();
       formData.append('rollNumber', data.rollNumber);
 
       const response = await handleAttendanceVerification(formData);
+      setIsLocating(false);
 
       if (response.error) {
         toast({
@@ -99,11 +96,21 @@ export function AttendanceForm() {
                   description: `Hi ${student.name}, your attendance is already marked as Present.`,
               });
           } else {
-              markPresent(data.rollNumber);
-              toast({
-                  title: 'Verification Successful!',
-                  description: `Welcome, ${student.name}. Your attendance has been recorded.`,
-              });
+              const { locationWarning } = markPresent(data.rollNumber, { latitude: coords.latitude, longitude: coords.longitude });
+              
+              if(locationWarning) {
+                toast({
+                    variant: 'destructive',
+                    title: 'Location Warning!',
+                    description: `Welcome, ${student.name}. Your location seems to be far from campus, but your attendance has been recorded with a warning.`,
+                    duration: 5000,
+                });
+              } else {
+                toast({
+                    title: 'Verification Successful!',
+                    description: `Welcome, ${student.name}. Your attendance has been recorded.`,
+                });
+              }
           }
           form.reset();
         } else {
@@ -121,7 +128,34 @@ export function AttendanceForm() {
         });
       }
     });
+  }
+
+  const onSubmit: SubmitHandler<AttendanceFormValues> = (data) => {
+    if (!isWindowOpen) {
+      toast({ variant: 'destructive', title: 'Attendance Window Closed', description: 'The time to mark attendance has passed.' });
+      return;
+    }
+    
+    setIsLocating(true);
+
+    if (!navigator.geolocation) {
+      setIsLocating(false);
+      toast({ variant: 'destructive', title: 'Geolocation Not Supported', description: 'Your browser does not support location services.' });
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        handleVerificationAndMarking(data, position.coords);
+      },
+      (error) => {
+        setIsLocating(false);
+        toast({ variant: 'destructive', title: 'Location Error', description: `Could not get your location: ${error.message}` });
+      }
+    );
   };
+
+  const isSubmitting = isPending || isLocating;
 
   return (
     <Card className="w-full max-w-md shadow-2xl">
@@ -130,7 +164,7 @@ export function AttendanceForm() {
           <CardHeader>
             <CardTitle className="text-2xl font-headline">Mark Your Attendance</CardTitle>
             <CardDescription>
-              Enter your roll number and allow camera access. Verification is based on roll number only for this prototype.
+              Enter your roll number and allow camera & location access. Your location will be checked against the campus.
             </CardDescription>
           </CardHeader>
 
@@ -178,7 +212,7 @@ export function AttendanceForm() {
                     <FormItem>
                       <FormLabel>Roll Number</FormLabel>
                       <FormControl>
-                        <Input placeholder="e.g., 23XV1M0501" {...field} disabled={hasCameraPermission !== true}/>
+                        <Input placeholder="e.g., 23XV1M0501" {...field} disabled={hasCameraPermission !== true || isSubmitting}/>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -186,9 +220,10 @@ export function AttendanceForm() {
                 />
               </CardContent>
               <CardFooter>
-                <Button type="submit" className="w-full" disabled={isPending || hasCameraPermission !== true}>
+                <Button type="submit" className="w-full" disabled={isSubmitting || hasCameraPermission !== true}>
+                  {isLocating && <LocateFixed className="mr-2 h-4 w-4 animate-spin" />}
                   {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                  {isPending ? 'Verifying...' : 'Mark Attendance'}
+                  {isLocating ? 'Getting Location...' : isPending ? 'Verifying...' : 'Mark Attendance'}
                 </Button>
               </CardFooter>
             </>

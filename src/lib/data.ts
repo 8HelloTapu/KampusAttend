@@ -5,7 +5,14 @@ export interface Student {
   avatarUrl: string;
   status: 'Present' | 'Absent';
   branch: 'B.Tech CSE' | 'CSE(DS)';
+  location?: string;
+  locationWarning?: boolean;
 }
+
+export const COLLEGE_LOCATION = {
+  latitude: 28.7041, // Rohini, Delhi (simulating a college location)
+  longitude: 77.1025,
+};
 
 const cseStudents: Omit<Student, 'id' | 'avatarUrl' | 'status'>[] = [
     { name: 'AKUNUR SAI BRINDA', rollNumber: '23XV1M0501', branch: 'B.Tech CSE' },
@@ -137,12 +144,3 @@ export const mockStudentData: Student[] = [...cseStudents, ...dsStudents].map((s
   avatarUrl: `https://placehold.co/400x400.png`,
   status: 'Absent',
 }));
-
-export const absenteeStudent = {
-  studentId: '23XV1M0508',
-  name: 'BILAL AHMED',
-  lastKnownLocation: '28.6139, 77.2090', // India Gate, New Delhi
-  attendanceMarkedTime: new Date().toISOString(),
-  expectedClassroomLocation: '28.7041, 77.1025', // Rohini, Delhi (simulating a college location)
-  acceptableProximity: 500, // meters
-};

@@ -6,13 +6,13 @@ import { Header } from '@/components/Header';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { AttendanceOverview } from '@/components/faculty/AttendanceOverview';
 import { AttendanceQuery } from '@/components/faculty/AttendanceQuery';
-import { AbsenteeAlerts } from '@/components/faculty/AbsenteeAlerts';
-import { Users, Bot, AlertTriangle, Clock } from 'lucide-react';
+import { LocationAnomalyReport } from '@/components/faculty/LocationAnomalyReport';
+import { Users, Bot, ShieldAlert, Clock } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
-import { startAttendanceSession, getAttendanceSession, isAttendanceWindowOpen } from '@/lib/attendanceStore';
+import { startAttendanceSession, isAttendanceWindowOpen } from '@/lib/attendanceStore';
 
 const ALL_CLASSES = [
   { value: 'B.Tech CSE', label: 'B.Tech CSE' },
@@ -94,8 +94,8 @@ export default function FacultyDashboard() {
               AI Attendance Assistant
             </TabsTrigger>
             <TabsTrigger value="alerts">
-              <AlertTriangle className="mr-2 h-4 w-4" />
-              Absentee Alerts
+              <ShieldAlert className="mr-2 h-4 w-4" />
+              Location Anomaly Report
             </TabsTrigger>
           </TabsList>
           <TabsContent value="overview" className="space-y-4">
@@ -131,7 +131,7 @@ export default function FacultyDashboard() {
             <AttendanceQuery branch={selectedClass} />
           </TabsContent>
           <TabsContent value="alerts" className="space-y-4">
-            <AbsenteeAlerts />
+            <LocationAnomalyReport />
           </TabsContent>
         </Tabs>
       </main>

@@ -1,9 +1,8 @@
 'use server';
 
 import { attendanceInquiry } from '@/ai/flows/attendance-inquiry';
-import { absenteeAlert } from '@/ai/flows/absentee-alert';
+import { locationAnomalyReport } from '@/ai/flows/location-anomaly-report';
 import { verifyStudent } from '@/ai/flows/verify-student';
-import { absenteeStudent } from '@/lib/data';
 import { z } from 'zod';
 
 const inquirySchema = z.object({
@@ -33,15 +32,30 @@ export async function handleAttendanceQuery(formData: FormData) {
   }
 }
 
-export async function handleAbsenteeAlert() {
+const anomalyReportSchema = z.object({
+    attendanceData: z.string(),
+});
+
+export async function handleLocationAnomalyReport(formData: FormData) {
+    const parsed = anomalyReportSchema.safeParse({
+        attendanceData: formData.get('attendanceData'),
+    });
+
+    if (!parsed.success) {
+        return { error: 'Invalid input.' };
+    }
+
     try {
-        const result = await absenteeAlert(absenteeStudent);
-        return { result };
+        const result = await locationAnomalyReport({
+            attendanceData: parsed.data.attendanceData,
+        });
+        return { report: result.report };
     } catch(e) {
         console.error(e);
-        return { error: "Failed to run absentee alert."}
+        return { error: "Failed to generate location anomaly report."}
     }
 }
+
 
 const verificationSchema = z.object({
   rollNumber: z.string(),
