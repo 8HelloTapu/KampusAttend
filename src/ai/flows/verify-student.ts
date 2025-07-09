@@ -41,10 +41,19 @@ export async function verifyStudent(input: VerifyStudentInput): Promise<VerifySt
 
   // If the student has a reference image, use the AI-powered face verification.
   if (student.referenceImageUrl && input.livePhotoDataUri) {
-    return verifyFaceFlow({
-        referenceImageUrl: student.referenceImageUrl,
-        livePhotoDataUri: input.livePhotoDataUri,
-    });
+    try {
+      const result = await verifyFaceFlow({
+          referenceImageUrl: student.referenceImageUrl,
+          livePhotoDataUri: input.livePhotoDataUri,
+      });
+      return result;
+    } catch (e) {
+      console.error("Face verification flow failed:", e);
+      return {
+        isMatch: false,
+        message: "The AI verification system encountered an error. Please try again.",
+      }
+    }
   }
 
   // Fallback for students without a reference image (prototype behavior).
@@ -66,20 +75,24 @@ const faceVerificationPrompt = ai.definePrompt({
     name: 'faceVerificationPrompt',
     input: { schema: VerifyFaceInputSchema },
     output: { schema: VerifyStudentOutputSchema },
-    prompt: `You are an advanced AI security assistant for an attendance system. Your task is to verify if two images are of the same person.
+    prompt: `You are an advanced AI security assistant for an attendance system. Your task is to determine if two images contain the face of the same person.
 
-    - The first image is a trusted reference photo of the student.
-    - The second image is a live photo captured from their webcam.
+You will be given a trusted reference photo and a live photo from a webcam.
 
-    Carefully compare the faces in both images.
+Carefully compare the faces in both images and determine if they match.
 
-    - If you are confident they are the same person, set "isMatch" to true and provide a success message like "Face match confirmed."
-    - If they are not the same person, or if you cannot be sure, set "isMatch" to false and state that the faces do not match.
-    - If a face is not clearly visible in the live photo, set "isMatch" to false and ask the user to ensure their face is clear and well-lit.
+Your response MUST be in a valid JSON format that adheres to the following schema:
+{
+  "isMatch": boolean, // Set to true if the faces match, false otherwise.
+  "message": string // A brief explanation of the result.
+}
 
-    Reference Photo: {{media url=referenceImageUrl}}
-    Live Webcam Photo: {{media url=livePhotoDataUri}}
-    `,
+- If you are confident the faces belong to the same person, set "isMatch" to true and provide a success message like "Face match confirmed."
+- If the faces do not match, or if you have low confidence, set "isMatch" to false and state that the faces do not match.
+- If a face is not clearly visible in the live photo, set "isMatch" to false and provide a message like "Face not clear in live photo. Please ensure your face is well-lit and centered."
+
+Reference Photo: {{media url=referenceImageUrl}}
+Live Webcam Photo: {{media url=livePhotoDataUri}}`,
 });
 
 const verifyFaceFlow = ai.defineFlow(
@@ -90,6 +103,9 @@ const verifyFaceFlow = ai.defineFlow(
   },
   async (input) => {
     const { output } = await faceVerificationPrompt(input);
-    return output!;
+    if (!output) {
+      throw new Error("AI model did not return a valid JSON response.");
+    }
+    return output;
   }
 );
