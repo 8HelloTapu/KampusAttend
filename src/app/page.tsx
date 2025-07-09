@@ -10,9 +10,30 @@ export default function LandingPage() {
       <Header />
       <main className="flex-1">
         <div className="relative flex h-full min-h-[calc(100vh-3.5rem)] flex-col items-center justify-center overflow-hidden bg-background p-4">
-          <div 
-            className="absolute inset-0 z-0 h-full w-full bg-gradient-to-br from-background via-secondary/30 to-background"
-          ></div>
+           <div className="absolute inset-0 z-0 h-full w-full">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-full w-full"
+            >
+              <defs>
+                <pattern
+                  id="grid"
+                  width="40"
+                  height="40"
+                  patternUnits="userSpaceOnUse"
+                >
+                  <path
+                    d="M 40 0 L 0 0 0 40"
+                    fill="none"
+                    stroke="hsl(var(--foreground))"
+                    strokeOpacity="0.1"
+                    strokeWidth="1"
+                  />
+                </pattern>
+              </defs>
+              <rect width="100%" height="100%" fill="url(#grid)" />
+            </svg>
+          </div>
           
           <div className="z-10 flex flex-col items-center text-center">
             <div 
@@ -33,7 +54,7 @@ export default function LandingPage() {
               className="mt-2 max-w-2xl animate-fade-in-down text-lg text-foreground/80"
               style={{ animationDelay: '0.6s', animationFillMode: 'backwards' }}
             >
-              Smart, secure, and seamless attendance. Ready to begin?
+              Campus life. Digitally marked.
             </p>
 
             <div 
