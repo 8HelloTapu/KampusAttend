@@ -36,7 +36,7 @@ export function Header() {
         </Link>
         <div className="flex flex-1 items-center justify-end">
           <nav className="flex items-center space-x-2">
-            <Link href="/">
+            <Link href="/auth">
               <Button variant="ghost" size="icon" aria-label="Home">
                 <Home className="h-5 w-5" />
               </Button>
