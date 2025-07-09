@@ -76,64 +76,64 @@ export function AttendanceForm() {
 
   const handleVerificationAndMarking = (data: AttendanceFormValues, coords: GeolocationCoordinates) => {
     startTransition(async () => {
-      const formData = new FormData();
-      formData.append('rollNumber', data.rollNumber);
-
-      const response = await handleAttendanceVerification(formData);
-      setIsLocating(false);
-
-      if (response.error || !response.result?.isMatch) {
-        toast({
-          variant: 'destructive',
-          title: 'Verification Failed',
-          description: response.error || response.result?.message || 'Could not verify your roll number.',
-        });
-        return;
-      }
-
-      const student = findStudent(data.rollNumber);
-      if (!student) {
-        toast({
-          variant: 'destructive',
-          title: 'Verification Error',
-          description: 'Could not find student data after verification.',
-        });
-        return;
-      }
-
-      if (student.status === 'Present') {
-        toast({
-          variant: 'default',
-          title: 'Already Marked',
-          description: `Hi ${student.name}, your attendance is already marked as Present.`,
-        });
-        form.reset();
-        return;
-      }
-
-      // If we reach here, it's a successful, new attendance marking.
-      const { locationWarning } = markPresent(data.rollNumber, { latitude: coords.latitude, longitude: coords.longitude });
-      
-      if(locationWarning) {
-        toast({
+        setIsLocating(false);
+        const formData = new FormData();
+        formData.append('rollNumber', data.rollNumber);
+  
+        const response = await handleAttendanceVerification(formData);
+        
+        if (response.error || !response.result?.isMatch) {
+          toast({
             variant: 'destructive',
-            title: 'Location Warning!',
-            description: `Welcome, ${student.name}. Your location seems to be far from campus, but your attendance has been recorded with a warning.`,
-            duration: 5000,
-        });
-      } else {
-        toast({
-            title: 'Verification Successful!',
-            description: `Welcome, ${student.name}. Your attendance has been recorded.`,
-        });
-      }
-      
-      // The redirect should be the final action.
-      setTimeout(() => {
-        router.push('/');
-      }, 2000);
+            title: 'Verification Failed',
+            description: response.error || response.result?.message || 'Could not verify your roll number.',
+          });
+          return;
+        }
+        
+        initializeData(); 
+        const student = findStudent(data.rollNumber);
 
-      form.reset();
+        if (!student) {
+          toast({
+            variant: 'destructive',
+            title: 'Verification Error',
+            description: 'Could not find student data after verification.',
+          });
+          return;
+        }
+  
+        if (student.status === 'Present') {
+          toast({
+            variant: 'default',
+            title: 'Already Marked',
+            description: `Hi ${student.name}, your attendance is already marked as Present.`,
+          });
+          form.reset();
+          return;
+        }
+  
+        const { locationWarning } = markPresent(data.rollNumber, { latitude: coords.latitude, longitude: coords.longitude });
+        
+        if (locationWarning) {
+          toast({
+              variant: 'destructive',
+              title: 'Location Warning!',
+              description: `Welcome, ${student.name}. Your location seems to be far from campus, but your attendance has been recorded with a warning.`,
+              duration: 5000,
+          });
+        } else {
+          toast({
+              title: 'Verification Successful!',
+              description: `Welcome, ${student.name}. Your attendance has been recorded.`,
+          });
+        }
+        
+        form.reset();
+        
+        setTimeout(() => {
+          router.push('/');
+        }, 2000);
     });
   }
 
@@ -143,6 +143,27 @@ export function AttendanceForm() {
       return;
     }
     
+    const studentBranch = localStorage.getItem('studentBranch');
+    const rollNumber = data.rollNumber.toUpperCase();
+
+    if (studentBranch === 'B.Tech CSE' && !rollNumber.includes('M05')) {
+        toast({
+            variant: 'destructive',
+            title: 'Incorrect Branch',
+            description: 'This roll number does not belong to the B.Tech CSE branch. Please check the roll number and try again.',
+        });
+        return;
+    }
+
+    if (studentBranch === 'CSE(DS)' && !rollNumber.includes('M67')) {
+        toast({
+            variant: 'destructive',
+            title: 'Incorrect Branch',
+            description: 'This roll number does not belong to the CSE(DS) branch. Please check the roll number and try again.',
+        });
+        return;
+    }
+
     setIsLocating(true);
 
     if (!navigator.geolocation) {
