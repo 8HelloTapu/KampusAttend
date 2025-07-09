@@ -72,7 +72,11 @@ export function LoginCard({ userType, expectedUsername, expectedPassword, redire
             </div>
             <CardTitle className="text-2xl font-headline">{userType} Login</CardTitle>
             <CardDescription>
-              Use: <span className="font-mono">{expectedUsername}</span> / <span className="font-mono">{expectedPassword}</span>
+              For this prototype, please use:
+              <br />
+              Username: <span className="font-mono font-bold">{expectedUsername}</span>
+              <br />
+              Password: <span className="font-mono font-bold">{expectedPassword}</span>
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
