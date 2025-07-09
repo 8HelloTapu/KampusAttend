@@ -1,10 +1,29 @@
-import { mockStudentData, type Student } from '@/lib/data';
+'use client';
+
+import { useState, useEffect } from 'react';
+import type { Student } from '@/lib/data';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
+import { initializeData, getStudents } from '@/lib/attendanceStore';
 
 export function AttendanceOverview() {
-  const students = mockStudentData;
+  const [students, setStudents] = useState<Student[]>([]);
+
+  useEffect(() => {
+    initializeData();
+    setStudents(getStudents());
+
+    const handleStorageUpdate = () => {
+      setStudents(getStudents());
+    };
+
+    window.addEventListener('storageUpdate', handleStorageUpdate);
+
+    return () => {
+      window.removeEventListener('storageUpdate', handleStorageUpdate);
+    };
+  }, []);
 
   const getInitials = (name: string) => {
     const names = name.split(' ');

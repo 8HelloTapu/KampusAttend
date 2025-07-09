@@ -1,3 +1,7 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Header } from '@/components/Header';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { AttendanceOverview } from '@/components/faculty/AttendanceOverview';
@@ -5,8 +9,37 @@ import { AttendanceQuery } from '@/components/faculty/AttendanceQuery';
 import { AbsenteeAlerts } from '@/components/faculty/AbsenteeAlerts';
 import { Users, Bot, AlertTriangle } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function FacultyDashboard() {
+  const router = useRouter();
+  const [isAuthorized, setIsAuthorized] = useState(false);
+
+  useEffect(() => {
+    const isLoggedIn = localStorage.getItem('isFacultyLoggedIn');
+    if (isLoggedIn !== 'true') {
+      router.replace('/login/faculty');
+    } else {
+      setIsAuthorized(true);
+    }
+  }, [router]);
+
+  if (!isAuthorized) {
+    return (
+        <div className="flex min-h-screen w-full flex-col">
+            <Header />
+            <main className="flex-1 space-y-4 p-4 md:p-8 pt-6">
+                <Skeleton className="h-10 w-1/3" />
+                <Skeleton className="h-12 w-1/2" />
+                <div className="space-y-4">
+                    <Skeleton className="h-48 w-full" />
+                    <Skeleton className="h-48 w-full" />
+                </div>
+            </main>
+        </div>
+    );
+  }
+
   return (
       <div className="flex min-h-screen w-full flex-col">
         <Header />

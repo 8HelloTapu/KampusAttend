@@ -1,7 +1,41 @@
+'use client';
+
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { Header } from '@/components/Header';
 import { AttendanceForm } from '@/components/student/AttendanceForm';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function StudentDashboard() {
+  const router = useRouter();
+  const [isAuthorized, setIsAuthorized] = useState(false);
+
+  useEffect(() => {
+    const isLoggedIn = localStorage.getItem('isStudentLoggedIn');
+    if (isLoggedIn !== 'true') {
+      router.replace('/login/student');
+    } else {
+      setIsAuthorized(true);
+    }
+  }, [router]);
+
+  if (!isAuthorized) {
+    return (
+        <div className="flex min-h-screen w-full flex-col">
+            <Header />
+            <main className="flex flex-1 flex-col items-center justify-center bg-background p-4 md:p-8">
+                <div className="w-full max-w-md space-y-6">
+                    <Skeleton className="h-10 w-3/4" />
+                    <Skeleton className="h-6 w-full" />
+                    <Skeleton className="aspect-video w-full" />
+                    <Skeleton className="h-10 w-full" />
+                    <Skeleton className="h-10 w-full" />
+                </div>
+            </main>
+      </div>
+    );
+  }
+
   return (
     <div className="flex min-h-screen w-full flex-col">
       <Header />
@@ -11,3 +45,7 @@ export default function StudentDashboard() {
     </div>
   );
 }
+
+// React was not imported, so I added it.
+import { useState } from 'react';
+

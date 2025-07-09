@@ -12,6 +12,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Camera, MapPin, Loader2, VideoOff, RefreshCw } from 'lucide-react';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
+import { findStudent, markPresent } from '@/lib/attendanceStore';
 
 const attendanceSchema = z.object({
   rollNumber: z.string().min(1, 'Roll number is required.'),
@@ -41,7 +42,6 @@ export function AttendanceForm() {
   useEffect(() => {
     const getCameraPermission = async () => {
       if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        console.error('Camera not supported on this device');
         setHasCameraPermission(false);
         toast({
           variant: 'destructive',
@@ -57,12 +57,11 @@ export function AttendanceForm() {
         }
         setHasCameraPermission(true);
       } catch (error) {
-        console.error('Error accessing camera:', error);
         setHasCameraPermission(false);
         toast({
           variant: 'destructive',
           title: 'Camera Access Denied',
-          description: 'Please enable camera permissions in your browser settings to use this app.',
+          description: 'Please enable camera permissions in your browser settings.',
         });
       }
     };
@@ -90,11 +89,6 @@ export function AttendanceForm() {
           (error) => {
             setLocationError(`Error: ${error.message}`);
             setLocation(null);
-            toast({
-                variant: 'destructive',
-                title: 'Location Error',
-                description: 'Could not get your location. Please enable location services.',
-            });
           }
         );
       } else {
@@ -126,44 +120,37 @@ export function AttendanceForm() {
 
   const onSubmit: SubmitHandler<AttendanceFormValues> = (data) => {
     if (!capturedImage) {
-        toast({
-          variant: 'destructive',
-          title: 'Image Required',
-          description: 'Please capture your image to mark attendance.',
-        });
+        toast({ variant: 'destructive', title: 'Image Required', description: 'Please capture your image.' });
         return;
     }
     if (!location) {
-      toast({
-        variant: 'destructive',
-        title: 'Location Required',
-        description: 'Please wait for location to be fetched after capturing image.',
-      });
+      toast({ variant: 'destructive', title: 'Location Required', description: 'Please wait for location to be fetched.' });
       return;
     }
 
     setIsSubmitting(true);
-    console.log('Submitting data:', { ...data, location, image: capturedImage.substring(0, 30) + '...' });
     
+    // Simulate server verification
     setTimeout(() => {
       setIsSubmitting(false);
-      const isMatch = Math.random() > 0.2;
+      const student = findStudent(data.rollNumber);
 
-      if (isMatch) {
+      if (student) {
+        markPresent(data.rollNumber);
         toast({
           title: 'Attendance Marked!',
-          description: `Welcome, Roll No. ${data.rollNumber}. Your attendance has been recorded successfully.`,
+          description: `Welcome, ${student.name}. Your attendance has been recorded.`,
         });
         form.reset();
         handleRetake();
       } else {
         toast({
           variant: 'destructive',
-          title: 'Attendance Failed',
-          description: 'Verification failed. Please try again.',
+          title: 'Verification Failed',
+          description: 'Roll number not found. Please try again.',
         });
       }
-    }, 2000);
+    }, 1500);
   };
 
   return (
@@ -182,8 +169,7 @@ export function AttendanceForm() {
                  {hasCameraPermission === false && (
                     <div className="text-center text-muted-foreground p-4">
                         <VideoOff className="mx-auto h-10 w-10" />
-                        <p className="mt-2">Camera access not available.</p>
-                        <p className="text-xs">Please check permissions in your browser.</p>
+                        <p className="mt-2">Camera access denied.</p>
                     </div>
                  )}
                  {hasCameraPermission === null && (
@@ -194,7 +180,7 @@ export function AttendanceForm() {
                  )}
                  <video ref={videoRef} className={cn("h-full w-full object-cover", capturedImage || hasCameraPermission !== true ? 'hidden' : 'block')} autoPlay muted playsInline />
                  {capturedImage && (
-                    <Image src={capturedImage} alt="Captured student photo" fill className="object-cover" />
+                    <Image src={capturedImage} alt="Captured student photo" fill className="object-cover" data-ai-hint="person student" />
                  )}
                  <canvas ref={canvasRef} className="hidden" />
               </div>

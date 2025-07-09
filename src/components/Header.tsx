@@ -1,9 +1,30 @@
+'use client';
+
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter, usePathname } from 'next/navigation';
 import AttendaVisionLogo from './AttendaVisionLogo';
 import { Button } from './ui/button';
-import { Home } from 'lucide-react';
+import { Home, LogOut } from 'lucide-react';
 
 export function Header() {
+  const router = useRouter();
+  const pathname = usePathname();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const studentLogin = localStorage.getItem('isStudentLoggedIn') === 'true';
+    const facultyLogin = localStorage.getItem('isFacultyLoggedIn') === 'true';
+    setIsLoggedIn(studentLogin || facultyLogin);
+  }, [pathname]);
+
+  const handleLogout = () => {
+    localStorage.removeItem('isStudentLoggedIn');
+    localStorage.removeItem('isFacultyLoggedIn');
+    setIsLoggedIn(false);
+    router.push('/');
+  };
+
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-14 items-center">
@@ -20,6 +41,11 @@ export function Header() {
                 <Home className="h-5 w-5" />
               </Button>
             </Link>
+            {isLoggedIn && (
+              <Button variant="ghost" size="icon" aria-label="Logout" onClick={handleLogout}>
+                <LogOut className="h-5 w-5" />
+              </Button>
+            )}
           </nav>
         </div>
       </div>

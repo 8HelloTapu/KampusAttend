@@ -14,7 +14,7 @@ export default function Home() {
         Seamless attendance tracking powered by AI. Choose your portal to get started.
       </p>
       <div className="grid w-full max-w-4xl gap-8 md:grid-cols-2">
-        <Link href="/student">
+        <Link href="/login/student">
           <Card className="transform cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-2xl">
             <CardHeader>
               <div className="mb-4 flex justify-center">
@@ -31,7 +31,7 @@ export default function Home() {
             </CardContent>
           </Card>
         </Link>
-        <Link href="/faculty">
+        <Link href="/login/faculty">
           <Card className="transform cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-2xl">
             <CardHeader>
               <div className="mb-4 flex justify-center">
