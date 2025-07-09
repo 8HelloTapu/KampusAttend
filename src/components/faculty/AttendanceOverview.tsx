@@ -13,6 +13,7 @@ import { Button } from '@/components/ui/button';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { handleCancelAttendance } from '@/app/actions';
 import { useToast } from '@/hooks/use-toast';
+import { cn } from '@/lib/utils';
 
 export function AttendanceOverview({ branch }: { branch: string }) {
   const [students, setStudents] = useState<Student[]>([]);
@@ -74,6 +75,26 @@ export function AttendanceOverview({ branch }: { branch: string }) {
     }
     return names[0]?.[0] || '';
   };
+  
+  const getStatusVariant = (student: Student): 'success' | 'warning' | 'destructive' => {
+    if (student.status === 'Present') {
+      return 'success';
+    }
+    if (student.wasCancelled) {
+      return 'warning';
+    }
+    return 'destructive';
+  };
+
+  const getStatusDotClass = (student: Student): string => {
+    if (student.status === 'Present') {
+      return 'bg-[hsl(var(--success-foreground))]';
+    }
+    if (student.wasCancelled) {
+      return 'bg-[hsl(var(--warning-foreground))]';
+    }
+    return 'bg-[hsl(var(--destructive-foreground))]';
+  };
 
   return (
     <TooltipProvider>
@@ -115,8 +136,8 @@ export function AttendanceOverview({ branch }: { branch: string }) {
                         </TooltipContent>
                       </Tooltip>
                     )}
-                    <Badge variant={student.status === 'Present' ? 'success' : 'destructive'} className="items-center gap-2">
-                      <div className={`h-2 w-2 rounded-full ${student.status === 'Present' ? 'bg-success-foreground' : 'bg-destructive-foreground'}`}></div>
+                    <Badge variant={getStatusVariant(student)} className="items-center gap-2">
+                      <div className={cn('h-2 w-2 rounded-full', getStatusDotClass(student))}></div>
                       <span>{student.status}</span>
                     </Badge>
                   </div>

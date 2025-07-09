@@ -8,6 +8,7 @@ export interface Student {
   branch: 'B.Tech CSE' | 'CSE(DS)';
   location?: string;
   locationWarning?: boolean;
+  wasCancelled?: boolean;
   referenceImageUrl?: string;
   attendanceTime?: string;
   absenceReason?: string;

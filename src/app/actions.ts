@@ -6,7 +6,7 @@ import { locationAnomalyReport } from '@/ai/flows/location-anomaly-report';
 import { verifyStudent } from '@/ai/flows/verify-student';
 import { z } from 'zod';
 import { generateCancellationNotification } from '@/ai/flows/generate-cancellation-notification';
-import { addAbsenceReason, addNotification, markAbsent } from '@/lib/attendanceStore';
+import { addAbsenceReason, markAbsent } from '@/lib/attendanceStore';
 
 const inquirySchema = z.object({
   query: z.string(),
@@ -100,8 +100,8 @@ export async function handleCancelAttendance(formData: FormData) {
   }
 
   try {
-    // 1. Mark student as absent
-    markAbsent(parsed.data.rollNumber);
+    // 1. Mark student as absent and flag as cancelled
+    markAbsent(parsed.data.rollNumber, true);
     
     // 2. Generate notification with AI
     const notificationResult = await generateCancellationNotification({

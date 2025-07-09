@@ -70,6 +70,7 @@ export function markPresent(rollNumber: string, location?: {latitude: number, lo
     students[studentIndex].status = 'Present';
     students[studentIndex].attendanceTime = new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
     students[studentIndex].absenceReason = undefined; // Clear reason on marking present
+    students[studentIndex].wasCancelled = false; // Clear cancelled flag
 
     if (location) {
         students[studentIndex].location = `${location.latitude.toFixed(4)}, ${location.longitude.toFixed(4)}`;
@@ -88,7 +89,7 @@ export function markPresent(rollNumber: string, location?: {latitude: number, lo
   return { locationWarning: false };
 }
 
-export function markAbsent(rollNumber: string) {
+export function markAbsent(rollNumber: string, cancelled = false) {
   if (typeof window === 'undefined') return;
   
   const students = getStudents();
@@ -100,6 +101,7 @@ export function markAbsent(rollNumber: string) {
     students[studentIndex].location = undefined;
     students[studentIndex].locationWarning = false;
     students[studentIndex].absenceReason = undefined; // Clear reason when manually marked absent
+    students[studentIndex].wasCancelled = cancelled;
 
     localStorage.setItem(ATTENDANCE_KEY, JSON.stringify(students));
   }
