@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect, useTransition, useRef } from 'react';
@@ -81,57 +82,58 @@ export function AttendanceForm() {
       const response = await handleAttendanceVerification(formData);
       setIsLocating(false);
 
-      if (response.error) {
+      if (response.error || !response.result?.isMatch) {
         toast({
           variant: 'destructive',
-          title: 'Error',
-          description: response.error,
+          title: 'Verification Failed',
+          description: response.error || response.result?.message || 'Could not verify your roll number.',
         });
         return;
       }
 
-      if (response.result?.isMatch) {
-        const student = findStudent(data.rollNumber);
-        if (student) {
-          if (student.status === 'Present') {
-              toast({
-                  variant: 'default',
-                  title: 'Already Marked',
-                  description: `Hi ${student.name}, your attendance is already marked as Present.`,
-              });
-          } else {
-              const { locationWarning } = markPresent(data.rollNumber, { latitude: coords.latitude, longitude: coords.longitude });
-              
-              if(locationWarning) {
-                toast({
-                    variant: 'destructive',
-                    title: 'Location Warning!',
-                    description: `Welcome, ${student.name}. Your location seems to be far from campus, but your attendance has been recorded with a warning.`,
-                    duration: 5000,
-                });
-              } else {
-                toast({
-                    title: 'Verification Successful!',
-                    description: `Welcome, ${student.name}. Your attendance has been recorded.`,
-                });
-              }
-              setTimeout(() => router.push('/'), 2000);
-          }
-          form.reset();
-        } else {
-          toast({
-            variant: 'destructive',
-            title: 'Verification Error',
-            description: 'Could not find student data after verification.',
-          });
-        }
-      } else {
+      const student = findStudent(data.rollNumber);
+      if (!student) {
         toast({
           variant: 'destructive',
-          title: 'Verification Failed',
-          description: response.result?.message || 'Could not verify your roll number.',
+          title: 'Verification Error',
+          description: 'Could not find student data after verification.',
+        });
+        return;
+      }
+
+      if (student.status === 'Present') {
+        toast({
+          variant: 'default',
+          title: 'Already Marked',
+          description: `Hi ${student.name}, your attendance is already marked as Present.`,
+        });
+        form.reset();
+        return;
+      }
+
+      // If we reach here, it's a successful, new attendance marking.
+      const { locationWarning } = markPresent(data.rollNumber, { latitude: coords.latitude, longitude: coords.longitude });
+      
+      if(locationWarning) {
+        toast({
+            variant: 'destructive',
+            title: 'Location Warning!',
+            description: `Welcome, ${student.name}. Your location seems to be far from campus, but your attendance has been recorded with a warning.`,
+            duration: 5000,
+        });
+      } else {
+        toast({
+            title: 'Verification Successful!',
+            description: `Welcome, ${student.name}. Your attendance has been recorded.`,
         });
       }
+      
+      // The redirect should be the final action.
+      setTimeout(() => {
+        router.push('/');
+      }, 2000);
+
+      form.reset();
     });
   }
 
