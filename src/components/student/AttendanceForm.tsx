@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useTransition, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -26,6 +27,7 @@ export function AttendanceForm() {
   const [isWindowOpen, setIsWindowOpen] = useState(true);
   const [hasCameraPermission, setHasCameraPermission] = useState<boolean | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const router = useRouter();
 
   const { toast } = useToast();
 
@@ -37,8 +39,6 @@ export function AttendanceForm() {
   });
 
   useEffect(() => {
-    // This function now correctly syncs the master student list from the code 
-    // with the session data in the browser, preventing stale data errors.
     initializeData();
 
     const checkWindow = () => setIsWindowOpen(isAttendanceWindowOpen());
@@ -115,6 +115,7 @@ export function AttendanceForm() {
                     description: `Welcome, ${student.name}. Your attendance has been recorded.`,
                 });
               }
+              setTimeout(() => router.push('/'), 2000);
           }
           form.reset();
         } else {

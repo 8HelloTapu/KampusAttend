@@ -1,9 +1,9 @@
-import { LoginCard } from '@/components/auth/LoginCard';
+'use client';
 
-const subjects = [
-  { value: 'B.Tech CSE', label: 'B.Tech CSE' },
-  { value: 'CSE(DS)', label: 'CSE (Data Science)' },
-];
+import { LoginCard } from '@/components/auth/LoginCard';
+import { ALL_BRANCHES } from '@/lib/data';
+
+const subjects = ALL_BRANCHES;
 
 export default function FacultyLoginPage() {
   return (

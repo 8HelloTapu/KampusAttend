@@ -1,4 +1,5 @@
 import { LoginCard } from '@/components/auth/LoginCard';
+import { ALL_BRANCHES } from '@/lib/data';
 
 export default function StudentLoginPage() {
   return (
@@ -9,6 +10,7 @@ export default function StudentLoginPage() {
         expectedPassword="password"
         redirectPath="/student"
         authKey="isStudentLoggedIn"
+        subjects={ALL_BRANCHES}
       />
     </div>
   );

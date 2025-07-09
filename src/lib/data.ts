@@ -14,6 +14,11 @@ export const COLLEGE_LOCATION = {
   longitude: 77.1025,
 };
 
+export const ALL_BRANCHES = [
+  { value: 'B.Tech CSE', label: 'B.Tech CSE' },
+  { value: 'CSE(DS)', label: 'CSE (Data Science)' },
+];
+
 const cseStudents: Omit<Student, 'id' | 'avatarUrl' | 'status'>[] = [
     { name: 'AKUNUR SAI BRINDA', rollNumber: '23XV1M0501', branch: 'B.Tech CSE' },
     { name: 'AMARAM SINDHU REDDY', rollNumber: '23XV1M0502', branch: 'B.Tech CSE' },
@@ -59,7 +64,7 @@ const cseStudents: Omit<Student, 'id' | 'avatarUrl' | 'status'>[] = [
     { name: 'J SAI MOKSHAGNA', rollNumber: '23XV1M0542', branch: 'B.Tech CSE' },
     { name: 'KRUPALI RAO KATARI', rollNumber: '23XV1M0543', branch: 'B.Tech CSE' },
     { name: 'BHARATULA SAI LAHARI', rollNumber: '23XV1M0544', branch: 'B.Tech CSE' },
-    { name: 'THAPASVIPOOGURI', rollNumber: '23XV1M0545', branch: 'B.Tech CSE' },
+    { name: 'THAPASVI POOGURI', rollNumber: '23XV1M0545', branch: 'B.Tech CSE' },
     { name: 'KASIREDDY RUDRA VAMSI', rollNumber: '23XV1M0546', branch: 'B.Tech CSE' },
     { name: 'SHAIK TASNEEM', rollNumber: '23XV1M0547', branch: 'B.Tech CSE' },
     { name: 'N. HARSHA VARDHAN RAJU', rollNumber: '23XV1M0548', branch: 'B.Tech CSE' },

@@ -52,6 +52,8 @@ export function LoginCard({ userType, expectedUsername, expectedPassword, redire
         localStorage.setItem(authKey, 'true');
         if (userType === 'Faculty' && data.subject) {
           localStorage.setItem('facultyClass', data.subject);
+        } else if (userType === 'Student' && data.subject) {
+          localStorage.setItem('studentBranch', data.subject);
         }
         toast({
           title: 'Login Successful',
@@ -113,17 +115,17 @@ export function LoginCard({ userType, expectedUsername, expectedPassword, redire
                 </FormItem>
               )}
             />
-             {userType === 'Faculty' && subjects && (
+             {subjects && (
               <FormField
                 control={form.control}
                 name="subject"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Subject/Class</FormLabel>
+                    <FormLabel>{userType === 'Faculty' ? 'Subject/Class' : 'Branch'}</FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Select a class" />
+                          <SelectValue placeholder={userType === 'Faculty' ? 'Select a class' : 'Select your branch'} />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>

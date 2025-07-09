@@ -13,11 +13,9 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { startAttendanceSession, isAttendanceWindowOpen } from '@/lib/attendanceStore';
+import { ALL_BRANCHES } from '@/lib/data';
 
-const ALL_CLASSES = [
-  { value: 'B.Tech CSE', label: 'B.Tech CSE' },
-  { value: 'CSE(DS)', label: 'CSE (Data Science)' },
-];
+const ALL_CLASSES = ALL_BRANCHES;
 
 export default function FacultyDashboard() {
   const router = useRouter();
