@@ -4,7 +4,7 @@ import { mockStudentData, type Student, COLLEGE_LOCATION } from './data';
 
 const ATTENDANCE_KEY = 'attendanceData';
 const SESSION_KEY = 'attendanceSession';
-const ACCEPTABLE_PROXIMITY_METERS = 500;
+const ACCEPTABLE_PROXIMITY_METERS = 1000;
 
 interface AttendanceSession {
   startTime: string;

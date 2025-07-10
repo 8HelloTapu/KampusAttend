@@ -15,8 +15,8 @@ export interface Student {
 }
 
 export const COLLEGE_LOCATION = {
-  latitude: 17.494793,
-  longitude: 78.390236,
+  latitude: 17.45242,
+  longitude: 78.34181,
 };
 
 export const ALL_BRANCHES = [
