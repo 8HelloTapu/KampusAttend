@@ -1,8 +1,19 @@
+
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import KampusAttendLogo from '@/components/AttendaVisionLogo';
-import { MoveRight } from 'lucide-react';
+import { MoveRight, Info } from 'lucide-react';
 import { Header } from '@/components/Header';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+
 
 export default function LandingPage() {
   return (
@@ -58,7 +69,7 @@ export default function LandingPage() {
             </p>
 
             <div 
-              className="mt-10 animate-fade-in-up"
+              className="mt-10 flex flex-col sm:flex-row gap-4 animate-fade-in-up"
               style={{ animationDelay: '0.8s', animationFillMode: 'backwards' }}
             >
               <Link href="/auth">
@@ -67,6 +78,61 @@ export default function LandingPage() {
                   <MoveRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
                 </Button>
               </Link>
+               <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button size="lg" variant="outline" className="text-lg shadow-lg">
+                    <Info className="mr-2 h-5 w-5" />
+                    Evaluator Instructions
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Instructions for Evaluators</AlertDialogTitle>
+                    <AlertDialogDescription asChild>
+                      <div className="space-y-4 text-left pt-2 text-foreground/90">
+                        <p>Welcome! Here’s how to test the key features of the KampusAttend prototype:</p>
+                        
+                        <ol className="list-decimal list-inside space-y-3">
+                          <li>
+                            <strong>Open the Attendance Window (as Faculty):</strong>
+                            <ul className="list-disc list-inside pl-4 mt-1 space-y-1 text-sm">
+                              <li>Navigate to the <span className="font-bold text-primary">Faculty Portal</span>.</li>
+                              <li>Login with Username: <code className="font-bold bg-muted p-1 rounded">faculty</code> and Password: <code className="font-bold bg-muted p-1 rounded">password</code>.</li>
+                              <li>On the dashboard, click the <span className="font-bold">"Start Attendance"</span> button. This opens a 30-minute window for students to mark their attendance.</li>
+                            </ul>
+                          </li>
+                          <li>
+                             <strong>Mark Attendance (as Student):</strong>
+                            <ul className="list-disc list-inside pl-4 mt-1 space-y-1 text-sm">
+                              <li>Navigate to the <span className="font-bold text-primary">Student Portal</span>.</li>
+                              <li>Login with Username: <code className="font-bold bg-muted p-1 rounded">student</code> and Password: <code className="font-bold bg-muted p-1 rounded">password</code>.</li>
+                              <li>On the student page, enter a valid Roll Number (e.g., <code className="font-bold bg-muted p-1 rounded">23XV1M0545</code>) and click "Mark Attendance".</li>
+                               <li>You can now return to the Faculty dashboard to see the status updated to "Present" in real-time.</li>
+                            </ul>
+                          </li>
+                           <li>
+                             <strong>Explore AI & Other Features (as Faculty):</strong>
+                            <ul className="list-disc list-inside pl-4 mt-1 space-y-1 text-sm">
+                                <li>Use the <span className="font-bold">"AI Attendance Assistant"</span> tab to ask questions like "who is absent?".</li>
+                                <li>Use the <span className="font-bold">"Location Anomaly Report"</span> to see a list of students who are not on campus.</li>
+                                <li>In the <span className="font-bold">"Overview"</span> tab, you can <span className="font-bold text-destructive">cancel</span> a student's attendance. This will mark them absent and send an AI-generated notification.</li>
+                            </ul>
+                          </li>
+                          <li>
+                             <strong>Check Notifications (as Student):</strong>
+                            <ul className="list-disc list-inside pl-4 mt-1 space-y-1 text-sm">
+                                <li>Go to the <span className="font-bold">Student Portal</span> and click <span className="font-bold">"Check Notifications"</span>.</li>
+                                <li>Enter the roll number whose attendance you cancelled to see the AI-generated message.</li>
+                            </ul>
+                          </li>
+                        </ol>
+                        <p>Thank you for evaluating the application!</p>
+                      </div>
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogAction>Got it!</AlertDialogAction>
+                </AlertDialogContent>
+              </AlertDialog>
             </div>
           </div>
         </div>
@@ -74,3 +140,4 @@ export default function LandingPage() {
     </div>
   );
 }
+
