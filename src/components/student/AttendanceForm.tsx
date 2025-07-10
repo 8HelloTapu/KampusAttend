@@ -47,9 +47,9 @@ export function AttendanceForm() {
     
     const studentBranch = localStorage.getItem('studentBranch');
     if (studentBranch === 'CSE(DS)') {
-      setPlaceholder('e.g., 23XV1M6701');
+      setPlaceholder('e.g., 23XV1M6701 - 23XV1M6760');
     } else {
-      setPlaceholder('e.g., 23XV1M0545');
+      setPlaceholder('e.g., 23XV1M0501 - 23XV1M0557');
     }
 
     const checkWindow = () => setIsWindowOpen(isAttendanceWindowOpen());
@@ -242,7 +242,7 @@ export function AttendanceForm() {
                 <AlertTitle>Attendance Window Closed</AlertTitle>
                 <AlertDescription>
                   <p>The time limit for marking attendance has passed. Please contact your faculty.</p>
-                  <p className="mt-2 text-xs font-semibold text-destructive-foreground">(Evaluator: Please go to the Faculty Dashboard and click 'Start Attendance' to open the window.)</p>
+                  <p className="mt-2 text-xs font-bold text-destructive-foreground">(Evaluator: Please go to the Faculty Dashboard and click 'Start Attendance' to open the window.)</p>
                 </AlertDescription>
               </Alert>
             </CardContent>

@@ -90,7 +90,7 @@ const cseStudents: Omit<Student, 'id' | 'avatarUrl' | 'status'>[] = [
     { name: 'VEMULAPALLI BHAVANA', rollNumber: '23XV1M0554', branch: 'B.Tech CSE' },
     { name: 'BANDA KARTHIK YADAV', rollNumber: '23XV1M0555', branch: 'B.Tech CSE' },
     { name: 'G. SHAURYA VARMA', rollNumber: '23XV1M0556', branch: 'B.Tech CSE' },
-    { name: 'KEESARA MUKESH REDDY', rollNumber: '23XV1M0558', branch: 'B.Tech CSE' },
+    { name: 'KEESARA MUKESH REDDY', rollNumber: '23XV1M0557', branch: 'B.Tech CSE' },
 ];
 
 const dsStudents: Omit<Student, 'id' | 'avatarUrl' | 'status'>[] = [
